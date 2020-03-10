@@ -51,11 +51,11 @@ namespace Northwind.Tests
             string nullMail = null;
 
             // Act:
-            var correctMailValidationResult = ContactInformation.ValidateMail(correctMail);
-            var mailMissingSnabelAValidationResult = ContactInformation.ValidateMail(mailMissingSnabelA);
-            var mailMissingTldValidationResult = ContactInformation.ValidateMail(mailMissingTld);
-            var emptyStringMailValidationResult = ContactInformation.ValidateMail(emptyStringMail);
-            var nullMailValidationResult = ContactInformation.ValidateMail(nullMail);
+            (bool isValid, string errorMessage) correctMailValidationResult = ContactInformation.ValidateMail(correctMail);
+            (bool isValid, string errorMessage) mailMissingSnabelAValidationResult = ContactInformation.ValidateMail(mailMissingSnabelA);
+            (bool isValid, string errorMessage) mailMissingTldValidationResult = ContactInformation.ValidateMail(mailMissingTld);
+            (bool isValid, string errorMessage) emptyStringMailValidationResult = ContactInformation.ValidateMail(emptyStringMail);
+            (bool isValid, string errorMessage) nullMailValidationResult = ContactInformation.ValidateMail(nullMail);
 
             // Assert:
             Assert.True(correctMailValidationResult.isValid);
@@ -68,15 +68,15 @@ namespace Northwind.Tests
         [Fact]
         public void ValidatePhoneTest()
         {
-            var correctPhoneWithPlus = "+45 3334 4901";
-            var correctPhoneWithoutPlus = "0045 3334 4901";
-            var correctPhoneWithOutPlusAndSpaces = "004533344901";
+            string correctPhoneWithPlus = "+45 3334 4901";
+            string correctPhoneWithoutPlus = "0045 3334 4901";
+            string correctPhoneWithOutPlusAndSpaces = "004533344901";
 
 
             // Act:
-            var correctPhoneWithPlusValidationResult = ContactInformation.ValidatePhone(correctPhoneWithPlus);
-            var correctPhoneWithoutPlusValidationResult = ContactInformation.ValidatePhone(correctPhoneWithoutPlus);
-            var correctPhoneWithoutPlusAndSpacesValidationResult = ContactInformation.ValidatePhone(correctPhoneWithOutPlusAndSpaces);
+            (bool isValid, string errorMessage) correctPhoneWithPlusValidationResult = ContactInformation.ValidatePhone(correctPhoneWithPlus);
+            (bool isValid, string errorMessage) correctPhoneWithoutPlusValidationResult = ContactInformation.ValidatePhone(correctPhoneWithoutPlus);
+            (bool isValid, string errorMessage) correctPhoneWithoutPlusAndSpacesValidationResult = ContactInformation.ValidatePhone(correctPhoneWithOutPlusAndSpaces);
 
             // Assert
             Assert.True(correctPhoneWithPlusValidationResult.isValid);

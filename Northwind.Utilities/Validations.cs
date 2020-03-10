@@ -7,18 +7,22 @@ namespace Northwind.Utilities
     {
         public static bool TextOnly(string s)
         {
-            if(string.IsNullOrWhiteSpace(s))
-                return false;
-            return s.All(c => char.IsLetter(c));
+            return string.IsNullOrWhiteSpace(s) ? false : s.All(c => char.IsLetter(c));
         }
 
         public static bool TextOnlySentence(string s)
         {
             if(string.IsNullOrWhiteSpace(s))
+            {
                 return false;
+            }
             foreach(string word in s.Split(' ', '\t'))
+            {
                 if(!TextOnly(word))
+                {
                     return false;
+                }
+            }
             return true;
         }
 

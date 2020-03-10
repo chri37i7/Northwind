@@ -66,16 +66,16 @@ namespace Northwind.Entities
 
             set
             {
-                (bool isValid, string errorMessage) validationResult = ValidatePhone(value);
-                if(!validationResult.isValid)
+                (bool isValid, string errorMessage) = ValidatePhone(value);
+                if(!isValid)
                 {
-                    if(validationResult.errorMessage == "null")
+                    if(errorMessage == "null")
                     {
                         throw new ArgumentNullException();
                     }
                     else
                     {
-                        throw new ArgumentException(validationResult.errorMessage);
+                        throw new ArgumentException(errorMessage);
                     }
                 }
                 else if(value != privatePhone)
@@ -99,16 +99,16 @@ namespace Northwind.Entities
 
             set
             {
-                (bool isValid, string errorMessage) validationResult = ValidatePhone(value);
-                if(!validationResult.isValid)
+                (bool isValid, string errorMessage) = ValidatePhone(value);
+                if(!isValid)
                 {
-                    if(validationResult.errorMessage == "null")
+                    if(errorMessage == "null")
                     {
                         throw new ArgumentNullException();
                     }
                     else
                     {
-                        throw new ArgumentException(validationResult.errorMessage);
+                        throw new ArgumentException(errorMessage);
                     }
                 }
                 else if(value != workPhone)
@@ -132,16 +132,16 @@ namespace Northwind.Entities
 
             set
             {
-                (bool isValid, string errorMessage) validationResult = ValidateMail(value);
-                if(!validationResult.isValid)
+                (bool isValid, string errorMessage) = ValidateMail(value);
+                if(!isValid)
                 {
-                    if(validationResult.errorMessage == "null")
+                    if(errorMessage == "null")
                     {
                         throw new ArgumentNullException();
                     }
                     else
                     {
-                        throw new ArgumentException(validationResult.errorMessage);
+                        throw new ArgumentException(errorMessage);
                     }
                 }
                 else if(value != privateEmail)
@@ -165,16 +165,16 @@ namespace Northwind.Entities
 
             set
             {
-                (bool isValid, string errorMessage) validationResult = ValidateMail(value);
-                if(!validationResult.isValid)
+                (bool isValid, string errorMessage) = ValidateMail(value);
+                if(!isValid)
                 {
-                    if(validationResult.errorMessage == "null")
+                    if(errorMessage == "null")
                     {
                         throw new ArgumentNullException();
                     }
                     else
                     {
-                        throw new ArgumentException(validationResult.errorMessage);
+                        throw new ArgumentException(errorMessage);
                     }
                 }
                 else if(value != workEmail)

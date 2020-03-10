@@ -38,7 +38,7 @@ namespace Northwind.Gui.Desktop.UserControls
 
         private void ButtonContactinformation_Click(object sender, RoutedEventArgs e)
         {
-            var validationResult = ContactInformation.ValidateMail("mara@aspit.dk");
+            (bool isValid, string errorMessage) = ContactInformation.ValidateMail("mara@aspit.dk");
 
         }
     }
