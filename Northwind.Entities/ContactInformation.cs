@@ -99,7 +99,7 @@ namespace Northwind.Entities
 
             set
             {
-                var validationResult = ValidatePhone(value);
+                (bool isValid, string errorMessage) validationResult = ValidatePhone(value);
                 if(!validationResult.isValid)
                 {
                     if(validationResult.errorMessage == "null")
@@ -132,7 +132,7 @@ namespace Northwind.Entities
 
             set
             {
-                var validationResult = ValidateMail(value);
+                (bool isValid, string errorMessage) validationResult = ValidateMail(value);
                 if(!validationResult.isValid)
                 {
                     if(validationResult.errorMessage == "null")
@@ -165,7 +165,7 @@ namespace Northwind.Entities
 
             set
             {
-                var validationResult = ValidateMail(value);
+                (bool isValid, string errorMessage) validationResult = ValidateMail(value);
                 if(!validationResult.isValid)
                 {
                     if(validationResult.errorMessage == "null")
