@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Northwind.Gui.Desktop"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="450"
-        Width="800">
+        d:DesignWidth="1900"
+        d:DesignHeight="1000"
+        Title="Northwind Administration System"
+        WindowStyle="SingleBorderWindow"
+        WindowState="Maximized">
     <Window.Resources>
         <Style TargetType="MenuItem">
             <Setter Property="FontSize"

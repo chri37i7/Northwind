@@ -1,10 +1,13 @@
-﻿using Northwind.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Northwind.Entities;
 
 namespace Northwind.DataAccess
 {
@@ -47,7 +50,7 @@ namespace Northwind.DataAccess
         /// <exception cref=""
         public DataSet Execute(string sql)
         {
-            if(String.IsNullOrWhiteSpace(sql))
+            if(string.IsNullOrWhiteSpace(sql))
             {
                 throw new ArgumentException("Null or whitespace.");
             }
