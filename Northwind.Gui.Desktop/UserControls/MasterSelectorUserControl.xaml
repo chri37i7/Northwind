@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Northwind.Gui.Desktop.UserControls.MasterSelectorUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Northwind.Gui.Desktop.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="ToggleButton">
+            <Setter Property="Height"
+                    Value="50" />
+            <Setter Property="FontSize"
+                    Value="16" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel x:Name="stackPanelForToggleButtons">
+            <ToggleButton Content="HR"
+                          Click="ToggleButton_HR_Click" />
+            <ToggleButton Content="Produkter"
+                          Click="ToggleButton_Products_Click" />
+            <ToggleButton Content="Ordrer"
+                          Click="ToggleButton_Orders_Click" />
+            <ToggleButton Content="Faktura"
+                          Click="ToggleButton_Invoices_Click" />
+        </StackPanel>
+    </Grid>
+</UserControl>
