@@ -5,54 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Northwind.Gui.Desktop"
         mc:Ignorable="d"
-        d:DesignWidth="1900"
-        d:DesignHeight="1000"
-        Title="Northwind Administration System"
-        WindowStyle="SingleBorderWindow"
-        WindowState="Maximized">
-    <Window.Resources>
-        <Style TargetType="MenuItem">
-            <Setter Property="FontSize"
-                    Value="16" />
-            <Setter Property="Padding"
-                    Value="5" />
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="FontSize"
-                    Value="16" />
-        </Style>
-    </Window.Resources>
+        d:DesignWidth="1280"
+        d:DesignHeight="720"
+        Title="Northwind Order Administration System"
+        WindowStyle="SingleBorderWindow">
     <Grid>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top"
-                  Padding="5,0,0,0">
-                <MenuItem Header="Hjælp">
-                    <MenuItem Header="Om"
-                              Click="MenuItem_About_Click" />
-                </MenuItem>
-            </Menu>
-            <StatusBar Background="RoyalBlue"
-                       DockPanel.Dock="Bottom"
-                       Padding="5,0,5,0">
-                <StatusBarItem>
-                    <TextBlock Foreground="AntiqueWhite"
-                               Text="Klar."
-                               x:Name="textBloxkStatusBar" />
-                </StatusBarItem>
-            </StatusBar>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="6*" />
-                </Grid.ColumnDefinitions>
-                <UserControl Grid.Column="0"
-                             x:Name="masterSelectorUserControl" />
-                <GridSplitter Grid.Column="1"
-                              Width="10" />
-                <UserControl Grid.Column="2"
-                             x:Name="detailsUserControl" />
-            </Grid>
-        </DockPanel>
+        <!-- #region Columns and Rows-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!-- #endregion-->
+
+        <!-- #region Order Selection Grid -->
+        <Grid Grid.Column="0">
+            <ListView>
+
+            </ListView>
+        </Grid>
+        <!-- #endregion -->
+
+        <!-- #region Order Detail Grid-->
+        <Grid Grid.Column="1">
+            <Border BorderBrush="#FFABADB3"
+                    BorderThickness="0,1,1,1">
+
+            </Border>
+        </Grid>
+        <!-- #endregion -->
     </Grid>
 </Window>

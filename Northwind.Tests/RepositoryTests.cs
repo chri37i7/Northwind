@@ -23,13 +23,13 @@ namespace Northwind.Tests
         public void CanExecuteSql()
         {
             // Arrange:
-            string sql = "SELECT * FROM Orders";
+            string query = "SELECT * FROM Orders";
             Repository repository = new Repository();
             DataSet result;
             int rowCount;
 
             // Act:
-            result = repository.Execute(sql);
+            result = repository.Execute(query);
 
             // Assert:
             rowCount = result.Tables[0].Rows.Count;
