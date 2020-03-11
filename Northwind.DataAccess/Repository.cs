@@ -110,7 +110,9 @@ namespace Northwind.DataAccess
         /// <returns></returns>
         private static Order ExtractOrderFrom(DataRow dataRow)
         {
+            // Repository object for querying
             Repository repository = new Repository();
+            // List for OrderDetails related to the order
             List<OrderDetail> orderDetails = new List<OrderDetail>();
 
             // Read the column data
@@ -142,21 +144,13 @@ namespace Northwind.DataAccess
                     OrderDetail detail = ExtractOrderDetailFrom(resultDataRow);
                     orderDetails.Add(detail);
                 }
-                // Create the order object
-                Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
-                    shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry, orderDetails);
-
-                return order;
             }
-            else
-            {
-                // Create the order object
-                Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
-                    shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry, orderDetails);
 
-                // Return the order
-                return order;
-            }
+            // Create the order object
+            Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
+                shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry, orderDetails);
+
+            return order;
         }
 
         private static OrderDetail ExtractOrderDetailFrom(DataRow dataRow)
