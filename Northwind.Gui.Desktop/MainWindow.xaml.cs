@@ -83,13 +83,60 @@ namespace Northwind.Gui.Desktop
 
         private void Button_NewOrder_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.SelectedOrder = null;
+            viewModel.SelectedOrder = default;
+
+            // DatePickers
+            datePicker_OrderDate.SelectedDate = DateTime.Now;
+            datePicker_OrderDate.IsEnabled = true;
+            datePicker_RequiredDate.SelectedDate = DateTime.Now;
+            datePicker_RequiredDate.IsEnabled = true;
+            datePicker_ShippedDate.SelectedDate = DateTime.Now;
+            datePicker_ShippedDate.IsEnabled = true;
+
+            // TextBoxes
+            textBox_Freight.Text = string.Empty;
+            textBox_Freight.IsReadOnly = false;
+            textBox_ShipAddress.Text = string.Empty;
+            textBox_ShipAddress.IsReadOnly = false;
+            textBox_ShipCity.Text = string.Empty;
+            textBox_ShipCity.IsReadOnly = false;
+            textBox_ShipCountry.Text = string.Empty;
+            textBox_ShipCountry.IsReadOnly = false;
+            textBox_ShipName.Text = string.Empty;
+            textBox_ShipName.IsReadOnly = false;
+            textBox_ShipPostalCode.Text = string.Empty;
+            textBox_ShipPostalCode.IsReadOnly = false;
+            textBox_ShipRegion.Text = string.Empty;
+            textBox_ShipRegion.IsReadOnly = false;
+            textBox_ShipVia.Text = string.Empty;
+            textBox_ShipVia.IsReadOnly = false;
         }
         #endregion
 
         private void ListView_Orders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //viewModel.SelectedOrderDetails = viewModel.SelectedOrder.OrderDetails;
+
+            if(viewModel != null)
+            {
+                if(viewModel.SelectedOrder == null)
+                {
+                    // DatePickers
+                    datePicker_OrderDate.SelectedDate = DateTime.Now;
+                    datePicker_RequiredDate.SelectedDate = DateTime.Now;
+                    datePicker_ShippedDate.SelectedDate = DateTime.Now;
+
+                    // TextBoxes
+                    textBox_Freight.Text = string.Empty;
+                    textBox_ShipAddress.Text = string.Empty;
+                    textBox_ShipCity.Text = string.Empty;
+                    textBox_ShipCountry.Text = string.Empty;
+                    textBox_ShipName.Text = string.Empty;
+                    textBox_ShipPostalCode.Text = string.Empty;
+                    textBox_ShipRegion.Text = string.Empty;
+                    textBox_ShipVia.Text = string.Empty;
+                } 
+            }
         }
     }
 }
