@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace Northwind.DataAccess
     public class Repository
     {
         #region Fields and constants
-        const string connectionStringName = "NorthwindDB";
+        const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=5;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         #endregion
 
 
@@ -29,7 +29,7 @@ namespace Northwind.DataAccess
         {
             try
             {
-                SqlConnection connection = GetConnection(connectionStringName) as SqlConnection;
+                SqlConnection connection = GetConnection(connectionString) as SqlConnection;
                 (bool, Exception) connectionAttemptResult = TryConnectUsing(connection);
             }
             catch(Exception e)
@@ -48,17 +48,17 @@ namespace Northwind.DataAccess
         /// <returns>A <see cref="DataSet"/> wrapping any returned data.</returns>
         /// <exception cref="ArgumentException"/>
         /// <exception cref=""
-        public DataSet Execute(string sql)
+        public DataSet Execute(string query)
         {
-            if(string.IsNullOrWhiteSpace(sql))
+            if(string.IsNullOrWhiteSpace(query))
             {
                 throw new ArgumentException("Null or whitespace.");
             }
             DataSet resultSet = new DataSet();
             try
             {
-                SqlConnection connection = GetConnection(connectionStringName) as SqlConnection;
-                using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(sql, connection)))
+                SqlConnection connection = GetConnection(connectionString) as SqlConnection;
+                using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
                 {
                     adapter.Fill(resultSet);
                 }
@@ -71,16 +71,13 @@ namespace Northwind.DataAccess
         }
 
         /// <summary>
-        /// Creates a connection based on the name of a connection string that is stored in a config file.
+        /// Creates a connection based on the name of the input parameter connection string.
         /// </summary>
-        /// <param name="name">The name of the connection string.</param>
+        /// <param name="connectionString">The name of the connection string.</param>
         /// <returns>A new connection.</returns>
-        private static DbConnection GetConnection(string name)
+        private static DbConnection GetConnection(string connectionString)
         {
-            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings[name];
-            DbProviderFactory factory = DbProviderFactories.GetFactory(settings.ProviderName);
-            DbConnection connection = factory.CreateConnection();
-            connection.ConnectionString = settings.ConnectionString;
+            SqlConnection connection = new SqlConnection(connectionString);
             return connection;
         }
 

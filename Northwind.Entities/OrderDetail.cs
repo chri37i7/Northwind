@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Northwind.Entities
 {
-    public class Address
+    class OrderDetail
     {
     }
 }
