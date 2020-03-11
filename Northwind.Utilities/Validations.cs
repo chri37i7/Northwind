@@ -18,7 +18,7 @@ namespace Northwind.Utilities
         }
 
         #region Number Validation Methods
-        public static (bool, string) ValidateIsIntNegativ(int number)
+        public static (bool, string) ValidateIsIntNegative(int number)
         {
             if(number < 0)
             {
@@ -30,7 +30,7 @@ namespace Northwind.Utilities
             }
         }
 
-        public static (bool, string) ValidateIsFloatNegativ(float number)
+        public static (bool, string) ValidateIsFloatNegative(float number)
         {
             if(number < 0)
             {
@@ -42,7 +42,7 @@ namespace Northwind.Utilities
             }
         }
 
-        public static (bool, string) ValidateIsDecimalNegativ(decimal number)
+        public static (bool, string) ValidateIsDecimalNegative(decimal number)
         {
             if(number < 0)
             {

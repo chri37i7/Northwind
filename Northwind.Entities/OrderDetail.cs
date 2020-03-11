@@ -30,7 +30,7 @@ namespace Northwind.Entities
             }
             set
             {
-                (bool isValid, string errorMessage) = Validations.ValidateIsIntNegativ(value);
+                (bool isValid, string errorMessage) = Validations.ValidateIsIntNegative(value);
                 if(isValid)
                 {
                     if(orderID != value)
@@ -76,7 +76,7 @@ namespace Northwind.Entities
             }
             set
             {
-                (bool isValid, string errorMessage) = Validations.ValidateIsDecimalNegativ(value);
+                (bool isValid, string errorMessage) = Validations.ValidateIsDecimalNegative(value);
                 if(isValid)
                 {
                     if(unitPrice != value)
@@ -99,7 +99,7 @@ namespace Northwind.Entities
             }
             set
             {
-                (bool isValid, string errorMessage) = Validations.ValidateIsIntNegativ(value);
+                (bool isValid, string errorMessage) = Validations.ValidateIsIntNegative(value);
                 if(isValid)
                 {
                     if(quantity != value)
@@ -122,7 +122,7 @@ namespace Northwind.Entities
             }
             set
             {
-                (bool isValid, string errorMessage) = Validations.ValidateIsFloatNegativ(value);
+                (bool isValid, string errorMessage) = Validations.ValidateIsFloatNegative(value);
                 if(isValid)
                 {
                     if(discount != value)
