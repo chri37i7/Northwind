@@ -5,30 +5,54 @@ namespace Northwind.Utilities
 {
     public static class Validations
     {
-        public static bool TextOnly(string s)
+        public static (bool, string) ValidateIsStringNull(string input)
         {
-            return string.IsNullOrWhiteSpace(s) ? false : s.All(c => char.IsLetter(c));
+            if(string.IsNullOrEmpty(input))
+            {
+                return (false, "The value cannot be null, or empty");
+            }
+            else
+            {
+                return (true, string.Empty);
+            }
         }
 
-        public static bool TextOnlySentence(string s)
+        #region Number Validation Methods
+        public static (bool, string) ValidateIsIntNegativ(int number)
         {
-            if(string.IsNullOrWhiteSpace(s))
+            if(number < 0)
             {
-                return false;
+                return (false, "The number cannot be lower than 0");
             }
-            foreach(string word in s.Split(' ', '\t'))
+            else
             {
-                if(!TextOnly(word))
-                {
-                    return false;
-                }
+                return (true, string.Empty);
             }
-            return true;
         }
 
-        // Demonstrates the function like syntax for a method, and the ternary decision operator ? : and the LINQ ext. All() applied to an IEnummerable (in this case a String array).
-        // Same result as above, just with a different and more compact syntax.
-        public static bool TextOnlySentence2(string s)
-            => string.IsNullOrWhiteSpace(s) ? false : s.Split(' ', '\t').All(word => TextOnly(word));
+        public static (bool, string) ValidateIsFloatNegativ(float number)
+        {
+            if(number < 0)
+            {
+                return (false, "The number cannot be lower than 0");
+            }
+            else
+            {
+                return (true, string.Empty);
+            }
+        }
+
+        public static (bool, string) ValidateIsDecimalNegativ(decimal number)
+        {
+            if(number < 0)
+            {
+                return (false, "The number cannot be lower than 0");
+            }
+            else
+            {
+                return (true, string.Empty);
+            }
+        }
+        #endregion
     }
 }

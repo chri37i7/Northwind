@@ -26,9 +26,9 @@ namespace Northwind.Gui.Desktop.UserControls
             try
             {
                 Repository repository = new Repository();
-                List<Employee> employees = repository.GetAllEmployees();
-                DataContext = employees;
-                dataGridEmployees.ItemsSource = employees;
+                List<Order> orders = repository.GetAllOrders();
+                DataContext = orders;
+                dataGridEmployees.ItemsSource = orders;
             }
             catch(Exception)
             {
@@ -38,8 +38,7 @@ namespace Northwind.Gui.Desktop.UserControls
 
         private void ButtonContactinformation_Click(object sender, RoutedEventArgs e)
         {
-            (bool isValid, string errorMessage) = ContactInformation.ValidateMail("mara@aspit.dk");
-
+            //(bool isValid, string errorMessage) = ContactInformation.ValidateMail("mara@aspit.dk");
         }
     }
 }

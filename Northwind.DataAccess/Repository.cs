@@ -108,14 +108,26 @@ namespace Northwind.DataAccess
         /// </summary>
         /// <param name="dataRow"></param>
         /// <returns></returns>
-        private static Employee ExtractFrom(DataRow dataRow)
+        private static Order ExtractOrderFrom(DataRow dataRow)
         {
-            int id = (int)dataRow["EmployeeID"];
-            string privatePhone = (string)dataRow["HomePhone"];
+            int orderID = (int)dataRow["OrderID"];
+            string customerID = (string)dataRow["CustomerID"];
+            int employeeID = (int)dataRow["EmployeeID"];
+            DateTime orderDate = (DateTime)dataRow["OrderDate"];
+            DateTime requiredDate = (DateTime)dataRow["RequiredDate"];
+            DateTime shippedDate = (DateTime)dataRow["ShippedDate"];
+            int shipVia = (int)dataRow["ShipVia"];
+            decimal freight = (decimal)dataRow["Freight"];
+            string shipName = (string)dataRow["ShipName"];
+            string shipAddress = (string)dataRow["ShipAddress"];
+            string shipCity = (string)dataRow["ShipCity"];
+            string shipRegion = (string)dataRow["ShipRegion"];
+            string shipPostalCode = (string)dataRow["ShipPostalCode"];
+            string shipCountry = (string)dataRow["ShipCountry"];
 
-            ContactInformation contactInformation = new ContactInformation(String.Empty, String.Empty, privatePhone, String.Empty);
-            Employee employee = new Employee() { Id = id, ContactInformation = contactInformation };
-            return employee;
+            Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate, shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry);
+
+            return order;
         }
         #endregion
 
@@ -125,14 +137,14 @@ namespace Northwind.DataAccess
         /// Gets all employees.
         /// </summary>
         /// <returns>A list of all employees</returns>
-        public List<Employee> GetAllEmployees()
+        public List<Order> GetAllOrders()
         {
-            List<Employee> employees = new List<Employee>();
-            string sql = "SELECT * FROM Employees";
+            List<Order> orders = new List<Order>();
+            string query = "SELECT * FROM Orders";
             DataSet resultSet;
             try
             {
-                resultSet = Execute(sql);
+                resultSet = Execute(query);
             }
             catch(Exception)
             {
@@ -143,11 +155,11 @@ namespace Northwind.DataAccess
             {
                 foreach(DataRow dataRow in resultSet.Tables[0].Rows)
                 {
-                    Employee employee = ExtractFrom(dataRow);
-                    employees.Add(employee);
+                    Order order = ExtractOrderFrom(dataRow);
+                    orders.Add(order);
                 }
             }
-            return employees;
+            return orders;
         }
         #endregion
     }

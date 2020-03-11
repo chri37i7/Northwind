@@ -23,7 +23,7 @@ namespace Northwind.Tests
         public void CanExecuteSql()
         {
             // Arrange:
-            string sql = "SELECT * FROM Employees";
+            string sql = "SELECT * FROM Orders";
             Repository repository = new Repository();
             DataSet result;
             int rowCount;

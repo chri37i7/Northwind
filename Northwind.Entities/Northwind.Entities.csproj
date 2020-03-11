@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Northwind.Utilities\Northwind.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>
