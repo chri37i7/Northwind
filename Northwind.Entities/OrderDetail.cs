@@ -8,12 +8,12 @@ namespace Northwind.Entities
     public class OrderDetail
     {
         protected int orderID;
-        protected string productID;
+        protected int productID;
         protected decimal unitPrice;
-        protected int quantity;
+        protected short quantity;
         protected float discount;
 
-        public OrderDetail(int orderID, string productID, decimal unitPrice, int quantity, float discount)
+        public OrderDetail(int orderID, int productID, decimal unitPrice, short quantity, float  discount)
         {
             OrderID = orderID;
             ProductID = productID;
@@ -45,7 +45,7 @@ namespace Northwind.Entities
             }
         }
 
-        public virtual string ProductID
+        public virtual int ProductID
         {
             get
             {
@@ -53,7 +53,7 @@ namespace Northwind.Entities
             }
             set
             {
-                (bool isValid, string errorMessage) = Validations.ValidateIsStringNull(value);
+                (bool isValid, string errorMessage) = Validations.ValidateIsIntNegative(value);
                 if(isValid)
                 {
                     if(productID != value)
@@ -91,7 +91,7 @@ namespace Northwind.Entities
             }
         }
 
-        public virtual int Quantity
+        public virtual short Quantity
         {
             get
             {

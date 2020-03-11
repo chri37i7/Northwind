@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Northwind.Entities
 {
+    /// <summary>
+    /// Represents an <see cref="Order"/> object.
+    /// </summary>
     public class Order
     {
         protected int orderID;
@@ -20,10 +23,62 @@ namespace Northwind.Entities
         protected string shipRegion;
         protected string shipPostalCode;
         protected string shipCountry;
+        List<OrderDetail> orderDetails;
 
-        public Order(int orderID, string customerID, int employeeID, DateTime orderDate, DateTime requiredDate, DateTime shippedDate, int shipVia, decimal freight, string shipName, string shipAddress, string shipCity, string shipRegion, string shipPostalCode, string shipCountry)
+        /// <summary>
+        /// Creates an order object with the ID property. Used when creating objects with data from the database
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <param name="customerID"></param>
+        /// <param name="employeeID"></param>
+        /// <param name="orderDate"></param>
+        /// <param name="requiredDate"></param>
+        /// <param name="shippedDate"></param>
+        /// <param name="shipVia"></param>
+        /// <param name="freight"></param>
+        /// <param name="shipName"></param>
+        /// <param name="shipAddress"></param>
+        /// <param name="shipCity"></param>
+        /// <param name="shipRegion"></param>
+        /// <param name="shipPostalCode"></param>
+        /// <param name="shipCountry"></param>
+        public Order(int orderID, string customerID, int employeeID, DateTime orderDate, DateTime requiredDate, DateTime shippedDate, int shipVia, decimal freight, string shipName, string shipAddress, string shipCity, string shipRegion, string shipPostalCode, string shipCountry, List<OrderDetail> orderDetails)
         {
             OrderID = orderID;
+            CustomerID = customerID;
+            EmployeeID = employeeID;
+            OrderDate = orderDate;
+            RequiredDate = requiredDate;
+            ShippedDate = shippedDate;
+            ShipVia = shipVia;
+            Freight = freight;
+            ShipName = shipName;
+            ShipAddress = shipAddress;
+            ShipCity = shipCity;
+            ShipRegion = shipRegion;
+            ShipPostalCode = shipPostalCode;
+            ShipCountry = shipCountry;
+            OrderDetails = orderDetails;
+        }
+
+        /// <summary>
+        /// Creates an Order object without the ID property. Used when creating new data for the database
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <param name="employeeID"></param>
+        /// <param name="orderDate"></param>
+        /// <param name="requiredDate"></param>
+        /// <param name="shippedDate"></param>
+        /// <param name="shipVia"></param>
+        /// <param name="freight"></param>
+        /// <param name="shipName"></param>
+        /// <param name="shipAddress"></param>
+        /// <param name="shipCity"></param>
+        /// <param name="shipRegion"></param>
+        /// <param name="shipPostalCode"></param>
+        /// <param name="shipCountry"></param>
+        public Order(string customerID, int employeeID, DateTime orderDate, DateTime requiredDate, DateTime shippedDate, int shipVia, decimal freight, string shipName, string shipAddress, string shipCity, string shipRegion, string shipPostalCode, string shipCountry)
+        {
             CustomerID = customerID;
             EmployeeID = employeeID;
             OrderDate = orderDate;
@@ -245,6 +300,21 @@ namespace Northwind.Entities
                 if(shipCountry != value)
                 {
                     shipCountry = value;
+                }
+            }
+        }
+
+        public virtual List<OrderDetail> OrderDetails
+        {
+            get
+            {
+                return orderDetails;
+            }
+            set
+            {
+                if(orderDetails != value)
+                {
+                    orderDetails = value;
                 }
             }
         }

@@ -104,12 +104,16 @@ namespace Northwind.DataAccess
         }
 
         /// <summary>
-        /// Extract all data relevant to an employee from a dat row object, and return an employee object.
+        /// Extract all data relevant to an order from a datarow object, and return an order object.
         /// </summary>
         /// <param name="dataRow"></param>
         /// <returns></returns>
         private static Order ExtractOrderFrom(DataRow dataRow)
         {
+            Repository repository = new Repository();
+            List<OrderDetail> orderDetails = new List<OrderDetail>();
+
+            // Read the column data
             int orderID = (int)dataRow["OrderID"];
             string customerID = (string)dataRow["CustomerID"];
             int employeeID = (int)dataRow["EmployeeID"];
@@ -125,18 +129,56 @@ namespace Northwind.DataAccess
             string shipPostalCode = Convert.IsDBNull(dataRow["ShipPostalCode"]) ? null : (string)dataRow["ShipPostalCode"];
             string shipCountry = Convert.IsDBNull(dataRow["ShipCountry"]) ? null : (string)dataRow["ShipCountry"];
 
-            Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate, shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry);
+            // Query for getting Order details related to the order
+            string query = $"SELECT * FROM [Order Details] WHERE OrderID = {orderID};";
+            // Execute the query
+            DataSet details = repository.Execute(query);
 
-            return order;
+            // If the query returned any results
+            if(details.Tables.Count > 0 && details.Tables[0].Rows.Count > 0)
+            {
+                foreach(DataRow resultDataRow in details.Tables[0].Rows)
+                {
+                    OrderDetail detail = ExtractOrderDetailFrom(resultDataRow);
+                    orderDetails.Add(detail);
+                }
+                // Create the order object
+                Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
+                    shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry, orderDetails);
+
+                return order;
+            }
+            else
+            {
+                // Create the order object
+                Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
+                    shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry, orderDetails);
+
+                // Return the order
+                return order;
+            }
+        }
+
+        private static OrderDetail ExtractOrderDetailFrom(DataRow dataRow)
+        {
+            int orderID = (int)dataRow["OrderID"];
+            int productID = (int)dataRow["ProductID"];
+            decimal unitPrice = (decimal)dataRow["UnitPrice"];
+            short quantity = (short)dataRow["Quantity"];
+            float discount = (float)dataRow["Discount"];
+
+            OrderDetail orderDetail = new OrderDetail(orderID, productID, unitPrice, quantity, discount);
+
+            return orderDetail;
         }
         #endregion
 
 
         #region Repository Methods
         /// <summary>
-        /// Gets all employees.
+        /// Gets all orders.
         /// </summary>
-        /// <returns>A list of all employees</returns>
+        /// <returns>A list of all orders</returns>
         public List<Order> GetAllOrders()
         {
             List<Order> orders = new List<Order>();
@@ -150,7 +192,6 @@ namespace Northwind.DataAccess
             {
                 throw;
             }
-
             if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
             {
                 foreach(DataRow dataRow in resultSet.Tables[0].Rows)

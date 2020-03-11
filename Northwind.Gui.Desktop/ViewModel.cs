@@ -25,7 +25,7 @@ namespace Northwind.Gui.Desktop
             Orders = new ObservableCollection<Order>(orders);
         }
 
-        // Ban Properties
+        // ViewModel Properties
         public ObservableCollection<Order> Orders { get; set; }
         public Order SelectedOrder { get; set; }
     }

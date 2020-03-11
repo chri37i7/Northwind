@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Northwind.Gui.Desktop"
         mc:Ignorable="d"
-        d:DesignWidth="1280"
+        d:DesignWidth="900"
         d:DesignHeight="720"
         Title="Northwind Order Administration System"
         WindowStyle="SingleBorderWindow">
     <Grid>
         <!-- #region Columns and Rows-->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="450" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <!-- #endregion-->
@@ -30,7 +30,15 @@
         <Grid Grid.Column="1">
             <Border BorderBrush="#FFABADB3"
                     BorderThickness="0,1,1,1">
-
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="Order Date:"/>
+                        <DatePicker IsEnabled="True"
+                                    DisplayDate="{Binding DateTime.Now}"
+                                    SelectedDate="{Binding SelectedOrder.OrderDate}"/>
+                    </StackPanel>
+                </StackPanel>
             </Border>
         </Grid>
         <!-- #endregion -->
