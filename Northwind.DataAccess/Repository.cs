@@ -115,15 +115,15 @@ namespace Northwind.DataAccess
             int employeeID = (int)dataRow["EmployeeID"];
             DateTime orderDate = (DateTime)dataRow["OrderDate"];
             DateTime requiredDate = (DateTime)dataRow["RequiredDate"];
-            DateTime shippedDate = (DateTime)dataRow["ShippedDate"];
+            DateTime shippedDate = Convert.IsDBNull(dataRow["ShippedDate"]) ? DateTime.MinValue : (DateTime)dataRow["ShippedDate"];
             int shipVia = (int)dataRow["ShipVia"];
             decimal freight = (decimal)dataRow["Freight"];
-            string shipName = (string)dataRow["ShipName"];
-            string shipAddress = (string)dataRow["ShipAddress"];
-            string shipCity = (string)dataRow["ShipCity"];
-            string shipRegion = (string)dataRow["ShipRegion"];
-            string shipPostalCode = (string)dataRow["ShipPostalCode"];
-            string shipCountry = (string)dataRow["ShipCountry"];
+            string shipName = Convert.IsDBNull(dataRow["ShipName"]) ? null : (string)dataRow["ShipName"];
+            string shipAddress = Convert.IsDBNull(dataRow["ShipAddress"]) ? null : (string)dataRow["ShipAddress"];
+            string shipCity = Convert.IsDBNull(dataRow["ShipCity"]) ? null : (string)dataRow["ShipCity"];
+            string shipRegion = Convert.IsDBNull(dataRow["ShipRegion"]) ? null : (string)dataRow["ShipRegion"];
+            string shipPostalCode = Convert.IsDBNull(dataRow["ShipPostalCode"]) ? null : (string)dataRow["ShipPostalCode"];
+            string shipCountry = Convert.IsDBNull(dataRow["ShipCountry"]) ? null : (string)dataRow["ShipCountry"];
 
             Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate, shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry);
 

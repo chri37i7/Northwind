@@ -19,7 +19,8 @@
 
         <!-- #region Order Selection Grid -->
         <Grid Grid.Column="0">
-            <ListView>
+            <ListView ItemsSource="{Binding Orders}"
+                      SelectedItem="{Binding SelectedOrder}">
 
             </ListView>
         </Grid>
