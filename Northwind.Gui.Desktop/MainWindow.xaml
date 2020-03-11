@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Northwind.Gui.Desktop"
         mc:Ignorable="d"
-        Width="900"
-        Height="720"
+        Width="920"
+        Height="750"
         Title="Northwind Order Administration System">
     <Grid>
         <!-- #region Columns and Rows-->
@@ -85,7 +85,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="150" />
                 <RowDefinition Height="320" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="*"
+                               MinHeight="234" />
             </Grid.RowDefinitions>
             <!-- #endregion -->
 
@@ -93,73 +94,129 @@
                     BorderBrush="#FF828790"
                     BorderThickness="0,1,1,1" />
 
-            <!-- #region Order Dates-->
-            <GroupBox Grid.Row="0"
-                      Margin="5"
-                      Header="Order Dates">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="Order Date:"
-                                   Width="150"
-                                   TextAlignment="Right"
-                                   Margin="0,0,35,0"
-                                   VerticalAlignment="Center"
-                                   FontSize="16"
-                                   FontWeight="Light" />
-                        <DatePicker x:Name="datePicker_OrderDate"
-                                    IsEnabled="False"
-                                    DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.OrderDate, Mode=TwoWay}"
-                                    Width="200"
-                                    FontSize="16"
-                                    FontWeight="Light" />
+            <!-- #region Top Controls-->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!--#region User & Customer selection-->
+                <GroupBox Grid.Column="0"
+                          Margin="5"
+                          Header="User Controls">
+                    <StackPanel Orientation="Vertical"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,0,0,10">
+                            <TextBlock  Text="Select Employee:"
+                                        Width="112"
+                                        Height="25"
+                                        TextAlignment="Right"
+                                        Margin="0,0,35,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        FontWeight="Light" />
+                            <ComboBox x:Name="comboBox_Employee"
+                                      Width="125"
+                                      Height="25"
+                                      IsEnabled="False"
+                                      ItemsSource="{Binding Employees}"
+                                      SelectedItem="{Binding SelectedEmployee}"
+                                      DisplayMemberPath="{Binding Firstname}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,10,0,0">
+                            <TextBlock  Text="Select Customer:"
+                                        Width="112"
+                                        Height="25"
+                                        TextAlignment="Right"
+                                        Margin="0,0,35,0"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        FontWeight="Light" />
+                            <ComboBox x:Name="comboBox_Customer"
+                                      Width="125"
+                                      Height="25"
+                                      IsEnabled="False"
+                                      ItemsSource="{Binding Customers}"
+                                      SelectedItem="{Binding SelectedCustomer}"
+                                      DisplayMemberPath="{Binding CompanyName}" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="Required Date:"
-                                   Width="150"
-                                   TextAlignment="Right"
-                                   Margin="0,0,35,0"
-                                   VerticalAlignment="Center"
-                                   FontSize="16"
-                                   FontWeight="Light" />
-                        <DatePicker x:Name="datePicker_RequiredDate"
-                                    IsEnabled="False"
-                                    DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.RequiredDate, Mode=TwoWay}"
-                                    Width="200"
-                                    FontSize="16"
-                                    FontWeight="Light" />
+                </GroupBox>
+                <!--#endregion-->
+
+                <!--#region Order Dates-->
+                <GroupBox Grid.Column="1"
+                          Margin="5"
+                          Header="Order Dates">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,8,0,0">
+                            <TextBlock Text="Order Date:"
+                                       Width="100"
+                                       TextAlignment="Right"
+                                       Margin="0,0,35,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       FontWeight="Light" />
+                            <DatePicker x:Name="datePicker_OrderDate"
+                                        IsEnabled="False"
+                                        DisplayDate="{Binding DateTime.Now}"
+                                        SelectedDate="{Binding SelectedOrder.OrderDate, Mode=OneWay}"
+                                        Width="140"
+                                        FontSize="16"
+                                        FontWeight="Light" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,8,0,0">
+                            <TextBlock Text="Required Date:"
+                                       Width="100"
+                                       TextAlignment="Right"
+                                       Margin="0,0,35,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       FontWeight="Light" />
+                            <DatePicker x:Name="datePicker_RequiredDate"
+                                        IsEnabled="False"
+                                        DisplayDate="{Binding DateTime.Now}"
+                                        SelectedDate="{Binding SelectedOrder.RequiredDate}"
+                                        Width="140"
+                                        FontSize="16"
+                                        FontWeight="Light" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,8,0,0">
+                            <TextBlock Text="Shipped Date:"
+                                       Width="100"
+                                       TextAlignment="Right"
+                                       Margin="0,0,35,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       FontWeight="Light" />
+                            <DatePicker x:Name="datePicker_ShippedDate"
+                                        IsEnabled="False"
+                                        DisplayDate="{Binding DateTime.Now}"
+                                        SelectedDate="{Binding SelectedOrder.ShippedDate}"
+                                        Width="140"
+                                        FontSize="16"
+                                        FontWeight="Light" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="Shipped Date:"
-                                   Width="150"
-                                   TextAlignment="Right"
-                                   Margin="0,0,35,0"
-                                   VerticalAlignment="Center"
-                                   FontSize="16"
-                                   FontWeight="Light" />
-                        <DatePicker x:Name="datePicker_ShippedDate"
-                                    IsEnabled="False"
-                                    DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.ShippedDate, Mode=TwoWay}"
-                                    Width="200"
-                                    FontSize="16"
-                                    FontWeight="Light" />
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
+                </GroupBox>
+                <!--#endregion-->
+
+            </Grid>
             <!-- #endregion -->
 
-            <!-- #region Ship Details -->
+            <!-- #region Shipping Details -->
             <GroupBox Grid.Row="1"
                       Margin="5"
-                      Header="Ship Details">
+                      Header="Shipping Details">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
@@ -173,7 +230,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipName"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipName, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipName}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -191,7 +248,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipAddress"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipAddress, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipAddress}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -209,7 +266,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipCity"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipCity, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipCity}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -227,7 +284,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipRegion"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipRegion, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipRegion}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -245,7 +302,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipPostalCode"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipPostalCode, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipPostalCode}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -263,7 +320,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipCountry"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipCountry, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipCountry}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -281,7 +338,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipVia"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipVia, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.ShipVia}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -299,7 +356,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_Freight"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.Freight, Mode=TwoWay}"
+                                 Text="{Binding SelectedOrder.Freight}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -312,7 +369,169 @@
             <GroupBox Grid.Row="3"
                       Margin="5"
                       Header="Order Details">
+                <Grid>
+                    <!--#region Columns and rows-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!--#endregion-->
 
+                    <!--#region Order details list view-->
+                    <Grid Grid.Column="0">
+                        <ListView x:Name="listView_OrderDetails"
+                                  Grid.Row="0"
+                                  ItemsSource="{Binding Path=SelectedOrder.OrderDetails}"
+                                  SelectedItem="{Binding Path=SelectedOrderDetail}"
+                                  SelectionChanged="ListView_OrderDetails_SelectionChanged"
+                                  BorderBrush="#FFD5DFE5">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Product ID:"
+                                                    DisplayMemberBinding="{Binding ProductID, Mode=OneWay}"
+                                                    Width="72" />
+                                    <GridViewColumn Header="Quantity:"
+                                                    DisplayMemberBinding="{Binding Quantity, Mode=OneWay}"
+                                                    Width="66" />
+                                    <GridViewColumn Header="Unit Price:"
+                                                    DisplayMemberBinding="{Binding UnitPrice, Mode=OneWay}"
+                                                    Width="66" />
+                                    <GridViewColumn Header="Discount:"
+                                                    DisplayMemberBinding="{Binding Discount, Mode=OneWay}"
+                                                    Width="66" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                    <!--#endregion-->
+
+                    <!--#region Order Detail controls-->
+                    <Grid Grid.Column="1">
+                        <!--#region Columns and rows-->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="40" />
+                        </Grid.RowDefinitions>
+                        <!--#endregion-->
+
+                        <!--#region Group Box -->
+                        <GroupBox Header="Edit Details"
+                                  Grid.Row="0"
+                                  Grid.RowSpan="2"
+                                  BorderThickness="0" />
+                        <!--#endregion-->
+
+                        <!--#region Detail Controls-->
+                        <StackPanel Grid.Row="0"
+                                    VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="Product ID:"
+                                           Width="100"
+                                           TextAlignment="Right"
+                                           Margin="0,0,35,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="16"
+                                           FontWeight="Light" />
+                                <TextBox x:Name="textBox_ProductID"
+                                         IsEnabled="True"
+                                         Text="{Binding SelectedOrderDetail.ProductID}"
+                                         IsReadOnly="True"
+                                         Width="120"
+                                         FontSize="16"
+                                         FontWeight="Light" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="Unit Price:"
+                                           Width="100"
+                                           TextAlignment="Right"
+                                           Margin="0,0,35,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="16"
+                                           FontWeight="Light" />
+                                <TextBox x:Name="textBox_UnitPrice"
+                                         IsEnabled="True"
+                                         Text="{Binding SelectedOrderDetail.UnitPrice}"
+                                         IsReadOnly="True"
+                                         Width="120"
+                                         FontSize="16"
+                                         FontWeight="Light" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="Quantity:"
+                                           Width="100"
+                                           TextAlignment="Right"
+                                           Margin="0,0,35,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="16"
+                                           FontWeight="Light" />
+                                <TextBox x:Name="textBox_Quantity"
+                                         IsEnabled="True"
+                                         Text="{Binding SelectedOrderDetail.Quantity}"
+                                         IsReadOnly="True"
+                                         Width="120"
+                                         FontSize="16"
+                                         FontWeight="Light" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="Discount:"
+                                           Width="100"
+                                           TextAlignment="Right"
+                                           Margin="0,0,35,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="16"
+                                           FontWeight="Light" />
+                                <TextBox x:Name="textBox_Discount"
+                                         IsEnabled="True"
+                                         Text="{Binding SelectedOrderDetail.Discount}"
+                                         IsReadOnly="True"
+                                         Width="120"
+                                         FontSize="16"
+                                         FontWeight="Light" />
+                            </StackPanel>
+                        </StackPanel>
+                        <!--#endregion-->
+
+                        <!--#region Buttons-->
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="1"
+                                    HorizontalAlignment="Center">
+                            <Button x:Name="button_EditOrderDetail"
+                                    Content="Edit"
+                                    Margin="0,0,6,0"
+                                    Height="30"
+                                    Width="55"
+                                    Click="Button_EditOrderDetail_Click" />
+                            <Button x:Name="button_SaveOrderDetail"
+                                    Content="Save"
+                                    Margin="0,0,3,0"
+                                    Height="30"
+                                    Width="55"
+                                    Click="Button_SaveOrderDetail_Click" />
+                            <Button x:Name="button_NewOrderDetail"
+                                    Content="New"
+                                    Margin="3,0,0,0"
+                                    Height="30"
+                                    Width="55"
+                                    Click="Button_NewOrderDetail_Click" />
+                            <Button x:Name="button_DeleteOrderDetail"
+                                    Content="Delete"
+                                    Margin="6,0,0,0"
+                                    Height="30"
+                                    Width="55"
+                                    Click="Button_DeleteOrderDetail_Click" />
+                        </StackPanel>
+                        <!--#endregion-->
+                    </Grid>
+                    <!--#endregion-->
+                </Grid>
             </GroupBox>
         </Grid>
 

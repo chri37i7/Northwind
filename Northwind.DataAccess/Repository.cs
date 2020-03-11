@@ -169,6 +169,53 @@ namespace Northwind.DataAccess
             // Return the created object
             return orderDetail;
         }
+
+        private static Customer ExtractCustomerFrom(DataRow dataRow)
+        {
+            // Assign DataRows to variables
+            string customerID = (string)dataRow["CustomerID"];
+            string companyName = (string)dataRow["CompanyName"];
+            string contactName = (string)dataRow["ContactName"];
+            string contactTitle = (string)dataRow["ContactTitle"];
+            string address = (string)dataRow["Address"];
+            string city = (string)dataRow["City"];
+            string region = Convert.IsDBNull(dataRow["Region"]) ? null : (string)dataRow["Region"];
+            string postalCode = Convert.IsDBNull(dataRow["PostalCode"]) ? null : (string)dataRow["PostalCode"];
+            string country = (string)dataRow["Country"];
+            string phone = (string)dataRow["Phone"];
+            string fax = Convert.IsDBNull(dataRow["Fax"]) ? null : (string)dataRow["Fax"];
+
+            // Create OrderDetail object
+            Customer customer = new Customer(customerID, companyName, contactName, contactTitle, address, city, region, postalCode, country, phone, fax);
+
+            // Return the created object
+            return customer;
+        }
+
+        private static Employee ExtractEmployeeFrom(DataRow dataRow)
+        {
+            // Assign DataRows to variables
+            int employeeID = (int)dataRow["EmployeeID"];
+            string lastname = (string)dataRow["LastName"];
+            string firstname = (string)dataRow["FirstName"];
+            string title = (string)dataRow["Title"];
+            string titleOfCourtesy = (string)dataRow["TitleOfCourtesy"];
+            DateTime birthDate = (DateTime)dataRow["BirthDate"];
+            DateTime hireDate = (DateTime)dataRow["HireDate"];
+            string address = (string)dataRow["Address"];
+            string city = (string)dataRow["City"];
+            string region = Convert.IsDBNull(dataRow["Region"]) ? null : (string)dataRow["Region"];
+            string postalCode = (string)dataRow["PostalCode"];
+            string country = (string)dataRow["Country"];
+            string homePhone = (string)dataRow["HomePhone"];
+            string extension = (string)dataRow["Extension"];
+
+            // Create OrderDetail object
+            Employee employee = new Employee(employeeID, lastname, firstname, title, titleOfCourtesy, birthDate, hireDate, address, city, region, postalCode, country, homePhone, extension);
+
+            // Return the created object
+            return employee;
+        }
         #endregion
 
 
@@ -199,6 +246,62 @@ namespace Northwind.DataAccess
                 }
             }
             return orders;
+        }
+
+        /// <summary>
+        /// Gets all orders.
+        /// </summary>
+        /// <returns>A list of all orders</returns>
+        public List<Customer> GetAllCustomers()
+        {
+            List<Customer> customers = new List<Customer>();
+            string query = "SELECT * FROM Customers";
+            DataSet resultSet;
+            try
+            {
+                resultSet = Execute(query);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
+            {
+                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                {
+                    Customer customer = ExtractCustomerFrom(dataRow);
+                    customers.Add(customer);
+                }
+            }
+            return customers;
+        }
+
+        /// <summary>
+        /// Gets all orders.
+        /// </summary>
+        /// <returns>A list of all orders</returns>
+        public List<Employee> GetAllEmployees()
+        {
+            List<Employee> employees = new List<Employee>();
+            string query = "SELECT * FROM Employees";
+            DataSet resultSet;
+            try
+            {
+                resultSet = Execute(query);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
+            {
+                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                {
+                    Employee employee = ExtractEmployeeFrom(dataRow);
+                    employees.Add(employee);
+                }
+            }
+            return employees;
         }
         #endregion
     }

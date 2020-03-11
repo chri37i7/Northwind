@@ -3,6 +3,8 @@ using Northwind.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Northwind.Gui.Desktop
@@ -20,13 +22,22 @@ namespace Northwind.Gui.Desktop
 
             // Get all orders from the database
             List<Order> orders = repository.GetAllOrders();
+            List<Customer> customers = repository.GetAllCustomers();
+            List<Employee> employees = repository.GetAllEmployees();
 
             // Initialize ObServableCollection
             Orders = new ObservableCollection<Order>(orders);
+            Customers = new ObservableCollection<Customer>(customers);
+            Employees = new ObservableCollection<Employee>(employees);
         }
 
         // ViewModel Properties
-        public ObservableCollection<Order> Orders { get; set; }
-        public Order SelectedOrder { get; set; }
+        public virtual ObservableCollection<Order> Orders { get; set; }
+        public virtual Order SelectedOrder { get; set; }
+        public virtual OrderDetail SelectedOrderDetail { get; set; }
+        public virtual ObservableCollection<Customer> Customers { get; set; }
+        public virtual Customer SelectedCustomer { get; set; }
+        public virtual ObservableCollection<Employee> Employees { get; set; }
+        public virtual Employee SelectedEmployee { get; set; }
     }
 }
