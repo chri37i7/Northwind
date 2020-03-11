@@ -5,10 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Northwind.Gui.Desktop"
         mc:Ignorable="d"
-        d:DesignWidth="900"
-        d:DesignHeight="720"
-        Title="Northwind Order Administration System"
-        WindowStyle="SingleBorderWindow">
+        Width="900"
+        Height="720"
+        Title="Northwind Order Administration System">
     <Grid>
         <!-- #region Columns and Rows-->
         <Grid.ColumnDefinitions>
@@ -21,26 +20,237 @@
         <Grid Grid.Column="0">
             <ListView ItemsSource="{Binding Orders}"
                       SelectedItem="{Binding SelectedOrder}">
-
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Order ID:"
+                                        DisplayMemberBinding="{Binding OrderID}"
+                                        />
+                    </GridView>
+                </ListView.View>
             </ListView>
         </Grid>
         <!-- #endregion -->
 
         <!-- #region Order Detail Grid-->
         <Grid Grid.Column="1">
-            <Border BorderBrush="#FFABADB3"
-                    BorderThickness="0,1,1,1">
+
+            <!-- #region Rows and Columns-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150" />
+                <RowDefinition Height="290" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!-- #endregion -->
+
+            <Border Grid.RowSpan="2"
+                    BorderBrush="#FFABADB3"
+                    BorderThickness="0,1,1,1" />
+
+            <!-- #region Order Dates-->
+            <GroupBox Grid.Row="0"
+                      Margin="5"
+                      Header="Order Dates">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center">
-                        <TextBlock Text="Order Date:"/>
-                        <DatePicker IsEnabled="True"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Order Date:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <DatePicker x:Name="datePicker_OrderDate"
+                                    IsEnabled="False"
                                     DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.OrderDate}"/>
+                                    SelectedDate="{Binding SelectedOrder.OrderDate}"
+                                    Width="150"
+                                    FontSize="16"
+                                    FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Required Date:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <DatePicker x:Name="datePicker_RequiredDate"
+                                    IsEnabled="False"
+                                    DisplayDate="{Binding DateTime.Now}"
+                                    SelectedDate="{Binding SelectedOrder.RequiredDate}"
+                                    Width="150"
+                                    FontSize="16"
+                                    FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Shipped Date:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <DatePicker x:Name="datePicker_ShippedDate"
+                                    IsEnabled="False"
+                                    DisplayDate="{Binding DateTime.Now}"
+                                    SelectedDate="{Binding SelectedOrder.ShippedDate}"
+                                    Width="150"
+                                    FontSize="16"
+                                    FontWeight="Light" />
                     </StackPanel>
                 </StackPanel>
-            </Border>
+            </GroupBox>
+            <!-- #endregion -->
+
+            <!-- #region Ship Details -->
+            <GroupBox Grid.Row="1"
+                      Margin="5"
+                      Header="Ship Details">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship Name:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipName"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipName}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship Address:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipAddress"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipAddress}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship City:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipCity"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipCity}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship Region:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipRegion"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipRegion}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship Postal Code:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipPostalCode"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipPostalCode}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship Country:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipCountry"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipCountry}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Ship Via:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_ShipVia"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.ShipVia}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <!-- #endregion -->
+
+            <GroupBox Grid.Row="3"
+                      Margin="5"
+                      Header="Order Details">
+
+            </GroupBox>
         </Grid>
+
         <!-- #endregion -->
     </Grid>
 </Window>

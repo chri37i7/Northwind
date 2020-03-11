@@ -115,7 +115,7 @@ namespace Northwind.DataAccess
             // List for OrderDetails related to the order
             List<OrderDetail> orderDetails = new List<OrderDetail>();
 
-            // Read the column data
+            // Assign DataRows to variables
             int orderID = (int)dataRow["OrderID"];
             string customerID = (string)dataRow["CustomerID"];
             int employeeID = (int)dataRow["EmployeeID"];
@@ -150,19 +150,23 @@ namespace Northwind.DataAccess
             Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
                 shipVia, freight, shipName, shipAddress, shipCity, shipRegion, shipPostalCode, shipCountry, orderDetails);
 
+            // Return the created order object
             return order;
         }
 
         private static OrderDetail ExtractOrderDetailFrom(DataRow dataRow)
         {
+            // Assign DataRows to variables
             int orderID = (int)dataRow["OrderID"];
             int productID = (int)dataRow["ProductID"];
             decimal unitPrice = (decimal)dataRow["UnitPrice"];
             short quantity = (short)dataRow["Quantity"];
             float discount = (float)dataRow["Discount"];
 
+            // Create OrderDetail object
             OrderDetail orderDetail = new OrderDetail(orderID, productID, unitPrice, quantity, discount);
 
+            // Return the created object
             return orderDetail;
         }
         #endregion

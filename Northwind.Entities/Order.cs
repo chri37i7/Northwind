@@ -9,6 +9,7 @@ namespace Northwind.Entities
     /// </summary>
     public class Order
     {
+        // Fields
         protected int orderID;
         protected string customerID;
         protected int employeeID;
@@ -42,6 +43,7 @@ namespace Northwind.Entities
         /// <param name="shipRegion"></param>
         /// <param name="shipPostalCode"></param>
         /// <param name="shipCountry"></param>
+        /// <param name="orderDetails"></param>
         public Order(int orderID, string customerID, int employeeID, DateTime orderDate, DateTime requiredDate, DateTime shippedDate, int shipVia, decimal freight, string shipName, string shipAddress, string shipCity, string shipRegion, string shipPostalCode, string shipCountry, List<OrderDetail> orderDetails)
         {
             OrderID = orderID;
@@ -77,7 +79,8 @@ namespace Northwind.Entities
         /// <param name="shipRegion"></param>
         /// <param name="shipPostalCode"></param>
         /// <param name="shipCountry"></param>
-        public Order(string customerID, int employeeID, DateTime orderDate, DateTime requiredDate, DateTime shippedDate, int shipVia, decimal freight, string shipName, string shipAddress, string shipCity, string shipRegion, string shipPostalCode, string shipCountry)
+        /// <param name="orderDetails"></param>
+        public Order(string customerID, int employeeID, DateTime orderDate, DateTime requiredDate, DateTime shippedDate, int shipVia, decimal freight, string shipName, string shipAddress, string shipCity, string shipRegion, string shipPostalCode, string shipCountry, List<OrderDetail> orderDetails)
         {
             CustomerID = customerID;
             EmployeeID = employeeID;
@@ -92,6 +95,7 @@ namespace Northwind.Entities
             ShipRegion = shipRegion;
             ShipPostalCode = shipPostalCode;
             ShipCountry = shipCountry;
+            OrderDetails = orderDetails;
         }
 
         public virtual int OrderID
