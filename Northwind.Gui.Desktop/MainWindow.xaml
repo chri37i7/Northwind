@@ -11,39 +11,86 @@
     <Grid>
         <!-- #region Columns and Rows-->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="450" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <!-- #endregion-->
 
         <!-- #region Order Selection Grid -->
         <Grid Grid.Column="0">
-            <ListView ItemsSource="{Binding Orders}"
-                      SelectedItem="{Binding SelectedOrder}">
+            <!-- #region Rows and columns -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+            <!-- #endregion -->
+
+            <!--#region ListView-->
+            <ListView x:Name="listView_Orders"
+                      Grid.Row="0"
+                      ItemsSource="{Binding Orders}"
+                      SelectedItem="{Binding SelectedOrder}"
+                      SelectionChanged="ListView_Orders_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Order ID:"
                                         DisplayMemberBinding="{Binding OrderID}"
-                                        />
+                                        Width="80" />
+                        <GridViewColumn Header="Customor ID:"
+                                        DisplayMemberBinding="{Binding CustomerID}"
+                                        Width="90" />
+                        <GridViewColumn Header="Employee ID:"
+                                        DisplayMemberBinding="{Binding EmployeeID}"
+                                        Width="90" />
                     </GridView>
                 </ListView.View>
             </ListView>
+            <!--#endregion-->
+
+            <Border Grid.Row="1"
+                    BorderBrush="#FF828790"
+                    BorderThickness="1,0,1,1" />
+
+            <!--#region Controls-->
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button x:Name="button_EditOrder"
+                        Content="Edit"
+                        Width="70"
+                        Height="40"
+                        Margin="0,0,20,0"
+                        Click="Button_EditOrder_Click" />
+                <Button x:Name="button_SaveOrder"
+                        Content="Save"
+                        Width="70"
+                        Height="40"
+                        Click="Button_SaveOrder_Click" />
+                <Button x:Name="button_NewOrder"
+                        Content="New"
+                        Width="70"
+                        Height="40"
+                        Margin="20,0,0,0"
+                        Click="Button_NewOrder_Click" />
+            </StackPanel>
+            <!--#endregion-->
+
         </Grid>
         <!-- #endregion -->
 
-        <!-- #region Order Detail Grid-->
+        <!-- #region Details -->
         <Grid Grid.Column="1">
 
             <!-- #region Rows and Columns-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="150" />
-                <RowDefinition Height="290" />
+                <RowDefinition Height="320" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <!-- #endregion -->
 
-            <Border Grid.RowSpan="2"
-                    BorderBrush="#FFABADB3"
+            <Border Grid.RowSpan="3"
+                    BorderBrush="#FF828790"
                     BorderThickness="0,1,1,1" />
 
             <!-- #region Order Dates-->
@@ -64,8 +111,8 @@
                         <DatePicker x:Name="datePicker_OrderDate"
                                     IsEnabled="False"
                                     DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.OrderDate}"
-                                    Width="150"
+                                    SelectedDate="{Binding SelectedOrder.OrderDate, Mode=TwoWay}"
+                                    Width="200"
                                     FontSize="16"
                                     FontWeight="Light" />
                     </StackPanel>
@@ -82,8 +129,8 @@
                         <DatePicker x:Name="datePicker_RequiredDate"
                                     IsEnabled="False"
                                     DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.RequiredDate}"
-                                    Width="150"
+                                    SelectedDate="{Binding SelectedOrder.RequiredDate, Mode=TwoWay}"
+                                    Width="200"
                                     FontSize="16"
                                     FontWeight="Light" />
                     </StackPanel>
@@ -100,8 +147,8 @@
                         <DatePicker x:Name="datePicker_ShippedDate"
                                     IsEnabled="False"
                                     DisplayDate="{Binding DateTime.Now}"
-                                    SelectedDate="{Binding SelectedOrder.ShippedDate}"
-                                    Width="150"
+                                    SelectedDate="{Binding SelectedOrder.ShippedDate, Mode=TwoWay}"
+                                    Width="200"
                                     FontSize="16"
                                     FontWeight="Light" />
                     </StackPanel>
@@ -126,7 +173,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipName"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipName}"
+                                 Text="{Binding SelectedOrder.ShipName, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -144,7 +191,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipAddress"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipAddress}"
+                                 Text="{Binding SelectedOrder.ShipAddress, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -162,7 +209,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipCity"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipCity}"
+                                 Text="{Binding SelectedOrder.ShipCity, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -180,7 +227,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipRegion"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipRegion}"
+                                 Text="{Binding SelectedOrder.ShipRegion, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -198,7 +245,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipPostalCode"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipPostalCode}"
+                                 Text="{Binding SelectedOrder.ShipPostalCode, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -216,7 +263,7 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipCountry"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipCountry}"
+                                 Text="{Binding SelectedOrder.ShipCountry, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
@@ -234,7 +281,25 @@
                                    FontWeight="Light" />
                         <TextBox x:Name="textBox_ShipVia"
                                  IsEnabled="True"
-                                 Text="{Binding SelectedOrder.ShipVia}"
+                                 Text="{Binding SelectedOrder.ShipVia, Mode=TwoWay}"
+                                 IsReadOnly="True"
+                                 Width="200"
+                                 FontSize="16"
+                                 FontWeight="Light" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Freight:"
+                                   Width="150"
+                                   TextAlignment="Right"
+                                   Margin="0,0,35,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="Light" />
+                        <TextBox x:Name="textBox_Freight"
+                                 IsEnabled="True"
+                                 Text="{Binding SelectedOrder.Freight, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  Width="200"
                                  FontSize="16"
