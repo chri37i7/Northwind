@@ -36,7 +36,7 @@
                         <GridViewColumn Header="Order ID:"
                                         DisplayMemberBinding="{Binding OrderID}"
                                         Width="80" />
-                        <GridViewColumn Header="Customor ID:"
+                        <GridViewColumn Header="Customer ID:"
                                         DisplayMemberBinding="{Binding CustomerID}"
                                         Width="90" />
                         <GridViewColumn Header="Employee ID:"
@@ -55,23 +55,25 @@
             <StackPanel Grid.Row="1"
                         Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <Button x:Name="button_EditOrder"
-                        Content="Edit"
+                <Button x:Name="button_NewOrder"
+                        Content="New"                        
                         Width="70"
                         Height="40"
                         Margin="0,0,20,0"
+                        Click="Button_NewOrder_Click" />
+                <Button x:Name="button_EditOrder"
+                        Content="Edit"       
+                        IsEnabled="False"
+                        Width="70"
+                        Height="40"                        
                         Click="Button_EditOrder_Click" />
                 <Button x:Name="button_SaveOrder"
                         Content="Save"
-                        Width="70"
-                        Height="40"
-                        Click="Button_SaveOrder_Click" />
-                <Button x:Name="button_NewOrder"
-                        Content="New"
+                        IsEnabled="False"
                         Width="70"
                         Height="40"
                         Margin="20,0,0,0"
-                        Click="Button_NewOrder_Click" />
+                        Click="Button_SaveOrder_Click" />
             </StackPanel>
             <!--#endregion-->
 
@@ -221,7 +223,7 @@
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship Name:"
+                        <TextBlock Text="Name:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -232,14 +234,14 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipName}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship Address:"
+                        <TextBlock Text="Address:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -250,14 +252,14 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipAddress}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship City:"
+                        <TextBlock Text="City:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -268,14 +270,14 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipCity}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship Region:"
+                        <TextBlock Text="Region:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -286,14 +288,14 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipRegion}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship Postal Code:"
+                        <TextBlock Text="Postal Code:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -304,14 +306,14 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipPostalCode}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship Country:"
+                        <TextBlock Text="Country:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -322,14 +324,14 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipCountry}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ship Via:"
+                        <TextBlock Text="Via:"
                                    Width="150"
                                    TextAlignment="Right"
                                    Margin="0,0,35,0"
@@ -340,7 +342,7 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.ShipVia}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
@@ -358,7 +360,7 @@
                                  IsEnabled="True"
                                  Text="{Binding SelectedOrder.Freight}"
                                  IsReadOnly="True"
-                                 Width="200"
+                                 Width="300"
                                  FontSize="16"
                                  FontWeight="Light" />
                     </StackPanel>
@@ -388,16 +390,16 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Product ID:"
-                                                    DisplayMemberBinding="{Binding ProductID, Mode=OneWay}"
+                                                    DisplayMemberBinding="{Binding ProductID}"
                                                     Width="72" />
                                     <GridViewColumn Header="Quantity:"
-                                                    DisplayMemberBinding="{Binding Quantity, Mode=OneWay}"
+                                                    DisplayMemberBinding="{Binding Quantity}"
                                                     Width="66" />
                                     <GridViewColumn Header="Unit Price:"
-                                                    DisplayMemberBinding="{Binding UnitPrice, Mode=OneWay}"
+                                                    DisplayMemberBinding="{Binding UnitPrice}"
                                                     Width="66" />
                                     <GridViewColumn Header="Discount:"
-                                                    DisplayMemberBinding="{Binding Discount, Mode=OneWay}"
+                                                    DisplayMemberBinding="{Binding Discount}"
                                                     Width="66" />
                                 </GridView>
                             </ListView.View>
@@ -503,25 +505,29 @@
                         <StackPanel Orientation="Horizontal"
                                     Grid.Row="1"
                                     HorizontalAlignment="Center">
-                            <Button x:Name="button_EditOrderDetail"
-                                    Content="Edit"
+                            <Button x:Name="button_NewOrderDetail"
+                                    IsEnabled="False"
+                                    Content="New"
                                     Margin="0,0,6,0"
+                                    Height="30"
+                                    Width="55"
+                                    Click="Button_NewOrderDetail_Click" />
+                            <Button x:Name="button_EditOrderDetail"
+                                    IsEnabled="False"
+                                    Content="Edit"
+                                    Margin="5,0,5,0"
                                     Height="30"
                                     Width="55"
                                     Click="Button_EditOrderDetail_Click" />
                             <Button x:Name="button_SaveOrderDetail"
+                                    IsEnabled="False"
                                     Content="Save"
-                                    Margin="0,0,3,0"
+                                    Margin="5,0,5,0"
                                     Height="30"
                                     Width="55"
                                     Click="Button_SaveOrderDetail_Click" />
-                            <Button x:Name="button_NewOrderDetail"
-                                    Content="New"
-                                    Margin="3,0,0,0"
-                                    Height="30"
-                                    Width="55"
-                                    Click="Button_NewOrderDetail_Click" />
                             <Button x:Name="button_DeleteOrderDetail"
+                                    IsEnabled="False"
                                     Content="Delete"
                                     Margin="6,0,0,0"
                                     Height="30"
