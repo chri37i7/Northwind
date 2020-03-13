@@ -36,7 +36,7 @@ namespace Northwind.Gui.Desktop
 
         private void Button_SaveOrder_Click(object sender, RoutedEventArgs e)
         {
-            if(datePicker_OrderDate.IsEnabled != false)
+            if(button_SaveOrder.IsEnabled == true)
             {
                 if(datePicker_OrderDate.SelectedDate == null || datePicker_RequiredDate.SelectedDate == null)
                 {
@@ -74,8 +74,11 @@ namespace Northwind.Gui.Desktop
                         textBox_ShipCountry.Text,
                         orderDetails);
 
-                    viewModel.Orders.Add(newOrder);
-                    viewModel.SelectedOrder = newOrder;
+                    if(!viewModel.Orders.Contains(newOrder))
+                    {
+                        viewModel.Orders.Add(newOrder);
+                        viewModel.SelectedOrder = newOrder; 
+                    }
                 }
             }
         }
@@ -161,6 +164,7 @@ namespace Northwind.Gui.Desktop
                 textBox_Discount.IsReadOnly = true;
 
                 // Buttons
+                button_NewOrder.IsEnabled = false;
                 button_EditOrder.IsEnabled = false;
                 button_SaveOrder.IsEnabled = true;
             }
