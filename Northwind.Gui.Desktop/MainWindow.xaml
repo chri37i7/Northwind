@@ -28,6 +28,7 @@
             <!--#region ListView-->
             <ListView x:Name="listView_Orders"
                       Grid.Row="0"
+                      SelectionMode="Single"
                       ItemsSource="{Binding Orders}"
                       SelectedItem="{Binding SelectedOrder}"
                       SelectionChanged="ListView_Orders_SelectionChanged">
@@ -383,8 +384,9 @@
                     <Grid Grid.Column="0">
                         <ListView x:Name="listView_OrderDetails"
                                   Grid.Row="0"
-                                  ItemsSource="{Binding Path=SelectedOrder.OrderDetails}"
-                                  SelectedItem="{Binding Path=SelectedOrderDetail}"
+                                  SelectionMode="Single"
+                                  ItemsSource="{Binding Path=SelectedOrder.OrderDetails, Mode=OneWay}"
+                                  SelectedItem="{Binding Path=SelectedOrderDetail, Mode=TwoWay}"
                                   SelectionChanged="ListView_OrderDetails_SelectionChanged"
                                   BorderBrush="#FFD5DFE5">
                             <ListView.View>
@@ -438,7 +440,7 @@
                                            FontWeight="Light" />
                                 <TextBox x:Name="textBox_ProductID"
                                          IsEnabled="True"
-                                         Text="{Binding SelectedOrderDetail.ProductID}"
+                                         Text="{Binding SelectedOrderDetail.ProductID, Mode=OneWay}"
                                          IsReadOnly="True"
                                          Width="120"
                                          FontSize="16"
@@ -456,7 +458,7 @@
                                            FontWeight="Light" />
                                 <TextBox x:Name="textBox_UnitPrice"
                                          IsEnabled="True"
-                                         Text="{Binding SelectedOrderDetail.UnitPrice}"
+                                         Text="{Binding SelectedOrderDetail.UnitPrice, Mode=OneWay}"
                                          IsReadOnly="True"
                                          Width="120"
                                          FontSize="16"
@@ -474,7 +476,7 @@
                                            FontWeight="Light" />
                                 <TextBox x:Name="textBox_Quantity"
                                          IsEnabled="True"
-                                         Text="{Binding SelectedOrderDetail.Quantity}"
+                                         Text="{Binding SelectedOrderDetail.Quantity, Mode=OneWay}"
                                          IsReadOnly="True"
                                          Width="120"
                                          FontSize="16"
@@ -492,7 +494,7 @@
                                            FontWeight="Light" />
                                 <TextBox x:Name="textBox_Discount"
                                          IsEnabled="True"
-                                         Text="{Binding SelectedOrderDetail.Discount}"
+                                         Text="{Binding SelectedOrderDetail.Discount, Mode=OneWay}"
                                          IsReadOnly="True"
                                          Width="120"
                                          FontSize="16"

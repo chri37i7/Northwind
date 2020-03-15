@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using Microsoft.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Northwind.Entities;
 
 namespace Northwind.DataAccess
@@ -104,7 +101,7 @@ namespace Northwind.DataAccess
         }
 
         /// <summary>
-        /// Extract all data relevant to an order from a datarow object, and return an order object.
+        /// Extract all data relevant to an Order from a datarow object, and return an order object.
         /// </summary>
         /// <param name="dataRow"></param>
         /// <returns></returns>
@@ -154,6 +151,11 @@ namespace Northwind.DataAccess
             return order;
         }
 
+        /// <summary>
+        /// Extract all data relevant to an OrderDetail from a datarow object, and return an OrderDetail object.
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private static OrderDetail ExtractOrderDetailFrom(DataRow dataRow)
         {
             // Assign DataRows to variables
@@ -170,6 +172,11 @@ namespace Northwind.DataAccess
             return orderDetail;
         }
 
+        /// <summary>
+        /// Extract all data relevant to a Customer from a datarow object, and return an Customer object.
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private static Customer ExtractCustomerFrom(DataRow dataRow)
         {
             // Assign DataRows to variables
@@ -192,6 +199,11 @@ namespace Northwind.DataAccess
             return customer;
         }
 
+        /// <summary>
+        /// Extract all data relevant to an Employee from a datarow object, and return an Employee object.
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private static Employee ExtractEmployeeFrom(DataRow dataRow)
         {
             // Assign DataRows to variables
@@ -220,6 +232,8 @@ namespace Northwind.DataAccess
 
 
         #region Repository Methods
+
+        #region Order Methods
         /// <summary>
         /// Gets all orders.
         /// </summary>
@@ -248,6 +262,109 @@ namespace Northwind.DataAccess
             return orders;
         }
 
+        /// <summary>
+        /// Inserts the order into the database, and returns it with its ID
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public Order InsertOrder(Order order)
+        {
+            string query = $"INSERT INTO Orders(CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) " +
+                $"VALUES('{order.CustomerID}','{order.EmployeeID}','{order.OrderDate}','{order.RequiredDate}'," +
+                $"'{order.ShippedDate}','{order.ShipVia}','{order.Freight}','{order.ShipName}'," +
+                $"'{order.ShipAddress}','{order.ShipCity}','{order.ShipRegion}','{order.ShipPostalCode}','{order.ShipCountry}') " +
+                $"SELECT * FROM Orders WHERE OrderID = SCOPE_IDENTITY()";
+
+            DataSet insertQuery = Execute(query);
+
+            List<OrderDetail> orderDetails = new List<OrderDetail>();
+
+            List<Order> inserted = insertQuery.Tables[0].AsEnumerable().Select(dataRow => new Order(
+                dataRow.Field<int>("OrderID"),
+                dataRow.Field<string>("CustomerID"),
+                dataRow.Field<int>("EmployeeID"),
+                dataRow.Field<DateTime>("OrderDate"),
+                dataRow.Field<DateTime>("RequiredDate"),
+                dataRow.Field<DateTime>("ShippedDate"),
+                dataRow.Field<int>("ShipVia"),
+                dataRow.Field<decimal>("Freight"),
+                dataRow.Field<string>("ShipName"),
+                dataRow.Field<string>("ShipAddress"),
+                dataRow.Field<string>("ShipCity"),
+                dataRow.Field<string>("ShipRegion"),
+                dataRow.Field<string>("ShipPostalCode"),
+                dataRow.Field<string>("ShipCountry"),
+                orderDetails)).ToList<Order>();
+
+            // Return the created order object
+            return inserted[0];
+        }
+
+        /// <summary>
+        /// Updates the order in the database
+        /// </summary>
+        /// <param name="order"></param>
+        public void UpdateOrder(Order order)
+        {
+            string query = $"UPDATE Orders SET CustomerID = '{order.CustomerID}', " +
+                $"EmployeeID = '{order.EmployeeID}', " +
+                $"OrderDate = '{order.OrderDate}', " +
+                $"RequiredDate = '{order.RequiredDate}', " +
+                $"ShippedDate = '{order.ShippedDate}', " +
+                $"ShipVia = '{order.ShipVia}', " +
+                $"Freight = '{order.Freight}', " +
+                $"ShipName = '{order.ShipName}', " +
+                $"ShipAddress = '{order.ShipAddress}', " +
+                $"ShipCity = '{order.ShipCity}', " +
+                $"ShipRegion = '{order.ShipRegion}', " +
+                $"ShipPostalCode = '{order.ShipPostalCode}', " +
+                $"ShipCountry = '{order.ShipCountry}' " +
+                $"WHERE OrderID = '{order.OrderID}'";
+
+            Execute(query);
+        }
+        #endregion
+
+        #region Order Detail Methods
+
+        /// <summary>
+        /// Inserts an order detail into the database.
+        /// </summary>
+        /// <param name="orderDetail"></param>
+        /// <returns></returns>
+        public void InsertOrderDetail(OrderDetail orderDetail)
+        {
+            string query = $"INSERT INTO [Order Details](OrderID, ProductID, UnitPrice, Quantity, Discount) " +
+                $"VALUES('{orderDetail.OrderID}','{orderDetail.ProductID}','{orderDetail.UnitPrice}','{orderDetail.Quantity}','{orderDetail.Discount}')";
+
+            Execute(query);
+        }
+
+        /// <summary>
+        /// Updates an order detail in the database
+        /// </summary>
+        /// <param name="orderDetail"></param>
+        public void UpdateOrderDetail(OrderDetail orderDetail)
+        {
+            string query = $"UPDATE [Order Details] SET UnitPrice = '{Math.Round(orderDetail.UnitPrice, 2)}', Quantity = '{orderDetail.Quantity}', Discount = '{orderDetail.Discount}' WHERE ProductID = '{orderDetail.ProductID}'";
+
+            Execute(query);
+        }
+
+        /// <summary>
+        /// Deletes an order detail from the database
+        /// </summary>
+        /// <param name="orderDetail"></param>
+        public void DeleteOrderDetail(OrderDetail orderDetail)
+        {
+            string query = $"DELETE FROM [Order Details] WHERE ProductID = '{orderDetail.ProductID}'";
+
+            Execute(query);
+        }
+
+        #endregion
+
+        #region Customer & Employee Methods
         /// <summary>
         /// Gets all orders.
         /// </summary>
@@ -303,6 +420,8 @@ namespace Northwind.DataAccess
             }
             return employees;
         }
+        #endregion
+
         #endregion
     }
 }

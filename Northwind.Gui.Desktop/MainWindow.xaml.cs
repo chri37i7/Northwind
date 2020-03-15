@@ -22,7 +22,8 @@ namespace Northwind.Gui.Desktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ViewModel viewModel;
+        private readonly ViewModel viewModel;
+        private readonly Repository repository;
 
         public MainWindow()
         {
@@ -30,31 +31,47 @@ namespace Northwind.Gui.Desktop
 
             viewModel = new ViewModel();
             DataContext = viewModel;
+
+            repository = new Repository();
         }
 
         #region Master Events
 
         private void Button_SaveOrder_Click(object sender, RoutedEventArgs e)
         {
-            if(button_SaveOrder.IsEnabled == true)
+            if(viewModel.SelectedOrder != null)
             {
-                if(datePicker_OrderDate.SelectedDate == null || datePicker_RequiredDate.SelectedDate == null)
-                {
-                    MessageBox.Show("Please set all dates", "All Dates Not Set", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if(comboBox_Customer.SelectedItem == null)
-                {
-                    MessageBox.Show("Please select the customer", "No Customer Selected", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if(comboBox_Employee == null)
-                {
-                    MessageBox.Show("Please select the employee", "No Employee Selected", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if(textBox_Freight.Text == string.Empty || textBox_ShipAddress.Text == string.Empty || textBox_ShipCity.Text == string.Empty || textBox_ShipCountry.Text == string.Empty || textBox_ShipName.Text == string.Empty || textBox_ShipPostalCode.Text == string.Empty || textBox_ShipRegion.Text == string.Empty || textBox_ShipVia.Text == string.Empty)
-                {
-                    MessageBox.Show("Please fill out all boxes", "All Boxes Not Filled", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+
+                Order updatedOrder = new Order(
+                    viewModel.SelectedOrder.OrderID,
+                    viewModel.SelectedCustomer.CustomerID,
+                    viewModel.SelectedEmployee.EmployeeID,
+                    datePicker_OrderDate.SelectedDate ?? DateTime.Now,
+                    datePicker_RequiredDate.SelectedDate ?? DateTime.Now,
+                    datePicker_ShippedDate.SelectedDate ?? DateTime.Now,
+                    Convert.ToInt32(textBox_ShipVia.Text),
+                    Convert.ToDecimal(textBox_Freight.Text),
+                    textBox_ShipName.Text,
+                    textBox_ShipAddress.Text,
+                    textBox_ShipCity.Text,
+                    textBox_ShipRegion.Text,
+                    textBox_ShipPostalCode.Text,
+                    textBox_ShipCountry.Text,
+                    orderDetails);
+
+                // Remove the old order
+                viewModel.Orders.Remove(viewModel.SelectedOrder);
+                // Add the new order
+                viewModel.Orders.Add(updatedOrder);
+                // Select the new order
+                listView_Orders.SelectedItem = updatedOrder;
+                // Update the order in the DB
+                repository.UpdateOrder(updatedOrder);
+            }
+            else
+            {
+                try
                 {
                     List<OrderDetail> orderDetails = new List<OrderDetail>();
 
@@ -66,7 +83,7 @@ namespace Northwind.Gui.Desktop
                         datePicker_ShippedDate.SelectedDate ?? DateTime.Now,
                         Convert.ToInt32(textBox_ShipVia.Text),
                         Convert.ToDecimal(textBox_Freight.Text),
-                        textBox_ShipName.Text,
+                       textBox_ShipName.Text,
                         textBox_ShipAddress.Text,
                         textBox_ShipCity.Text,
                         textBox_ShipRegion.Text,
@@ -74,104 +91,85 @@ namespace Northwind.Gui.Desktop
                         textBox_ShipCountry.Text,
                         orderDetails);
 
-                    if(!viewModel.Orders.Contains(newOrder))
-                    {
-                        viewModel.Orders.Add(newOrder);
-                        viewModel.SelectedOrder = newOrder; 
-                    }
+                    viewModel.Orders.Add(repository.InsertOrder(newOrder));
+                    listView_Orders.SelectedItem = newOrder;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "An error occured", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
         private void Button_EditOrder_Click(object sender, RoutedEventArgs e)
         {
-            if(viewModel.SelectedOrder != null)
-            {
-                if(datePicker_OrderDate.IsEnabled == false)
-                {
-                    // Combo boxes
-                    comboBox_Customer.IsEnabled = true;
-                    comboBox_Employee.IsEnabled = true;
+            // Enable
+            button_SaveOrder.IsEnabled = true;
+            comboBox_Customer.IsEnabled = true;
+            comboBox_Employee.IsEnabled = true;
+            datePicker_OrderDate.IsEnabled = true;
+            datePicker_RequiredDate.IsEnabled = true;
+            datePicker_ShippedDate.IsEnabled = true;
+            textBox_ShipName.IsReadOnly = false;
+            textBox_ShipAddress.IsReadOnly = false;
+            textBox_ShipCity.IsReadOnly = false;
+            textBox_ShipRegion.IsReadOnly = false;
+            textBox_ShipPostalCode.IsReadOnly = false;
+            textBox_ShipCountry.IsReadOnly = false;
+            textBox_ShipVia.IsReadOnly = false;
+            textBox_Freight.IsReadOnly = false;
 
-                    // Order Date DatePickers
-                    datePicker_OrderDate.IsEnabled = true;
-                    datePicker_RequiredDate.IsEnabled = true;
-                    datePicker_ShippedDate.IsEnabled = true;
-
-                    // Shipping Detail TextBoxes
-                    textBox_Freight.IsReadOnly = false;
-                    textBox_ShipAddress.IsReadOnly = false;
-                    textBox_ShipCity.IsReadOnly = false;
-                    textBox_ShipCountry.IsReadOnly = false;
-                    textBox_ShipName.IsReadOnly = false;
-                    textBox_ShipPostalCode.IsReadOnly = false;
-                    textBox_ShipRegion.IsReadOnly = false;
-                    textBox_ShipVia.IsReadOnly = false;
-
-                    // Details
-                    button_SaveOrder.IsEnabled = true;
-                    button_NewOrder.IsEnabled = false;
-                    button_EditOrder.IsEnabled = false;
-                    button_NewOrderDetail.IsEnabled = true;
-                }
-                if(viewModel.SelectedOrderDetail != null)
-                {
-                    button_EditOrderDetail.IsEnabled = true;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select an order", "No Order Selected", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            // Disable
+            button_NewOrder.IsEnabled = false;
+            button_EditOrder.IsEnabled = false;
         }
 
         private void Button_NewOrder_Click(object sender, RoutedEventArgs e)
         {
-            if(viewModel != null)
-            {
-                // Set selected to null
-                listView_Orders.SelectedItem = null;
-                listView_OrderDetails.SelectedItem = null;
+            // Reset SelectedItem
+            listView_Orders.SelectedItem = null;
 
-                // Order Date DatePickers
-                datePicker_OrderDate.DisplayDate = DateTime.Now;
-                datePicker_OrderDate.IsEnabled = true;
-                datePicker_RequiredDate.IsEnabled = true;
-                datePicker_RequiredDate.DisplayDate = DateTime.Now;
-                datePicker_ShippedDate.IsEnabled = true;
-                datePicker_ShippedDate.DisplayDate = DateTime.Now;
+            // Enable
+            button_SaveOrder.IsEnabled = true;
+            comboBox_Customer.IsEnabled = true;
+            comboBox_Employee.IsEnabled = true;
+            datePicker_OrderDate.IsEnabled = true;
+            datePicker_RequiredDate.IsEnabled = true;
+            datePicker_ShippedDate.IsEnabled = true;
+            textBox_ShipName.IsReadOnly = false;
+            textBox_ShipAddress.IsReadOnly = false;
+            textBox_ShipCity.IsReadOnly = false;
+            textBox_ShipRegion.IsReadOnly = false;
+            textBox_ShipPostalCode.IsReadOnly = false;
+            textBox_ShipCountry.IsReadOnly = false;
+            textBox_ShipVia.IsReadOnly = false;
+            textBox_Freight.IsReadOnly = false;
 
-                // Combo boxes
-                comboBox_Customer.IsEnabled = true;
-                comboBox_Customer.SelectedItem = null;
-                comboBox_Employee.IsEnabled = true;
-                comboBox_Employee.SelectedItem = null;
-
-                // Shipping Detail TextBoxes
-                textBox_Freight.IsReadOnly = false;
-                textBox_ShipAddress.IsReadOnly = false;
-                textBox_ShipCity.IsReadOnly = false;
-                textBox_ShipCountry.IsReadOnly = false;
-                textBox_ShipName.IsReadOnly = false;
-                textBox_ShipPostalCode.IsReadOnly = false;
-                textBox_ShipRegion.IsReadOnly = false;
-                textBox_ShipVia.IsReadOnly = false;
-
-                // Order Detail TextBoxes
-                textBox_ProductID.IsReadOnly = true;
-                textBox_UnitPrice.IsReadOnly = true;
-                textBox_Quantity.IsReadOnly = true;
-                textBox_Discount.IsReadOnly = true;
-
-                // Buttons
-                button_NewOrder.IsEnabled = false;
-                button_EditOrder.IsEnabled = false;
-                button_SaveOrder.IsEnabled = true;
-            }
+            // Disable
+            button_NewOrder.IsEnabled = false;
         }
 
         private void ListView_Orders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Enable
+            button_NewOrder.IsEnabled = true;
+
+            // Disable
+            button_SaveOrder.IsEnabled = false;
+            comboBox_Customer.IsEnabled = false;
+            comboBox_Employee.IsEnabled = false;
+            datePicker_OrderDate.IsEnabled = false;
+            datePicker_RequiredDate.IsEnabled = false;
+            datePicker_ShippedDate.IsEnabled = false;
+            textBox_ShipName.IsReadOnly = true;
+            textBox_ShipAddress.IsReadOnly = true;
+            textBox_ShipCity.IsReadOnly = true;
+            textBox_ShipRegion.IsReadOnly = true;
+            textBox_ShipPostalCode.IsReadOnly = true;
+            textBox_ShipCountry.IsReadOnly = true;
+            textBox_ShipVia.IsReadOnly = true;
+            textBox_Freight.IsReadOnly = true;
+
             // If the SelectedOrder is not null, disable the DatePickers, and TextBoxes
             if(viewModel.SelectedOrder != null)
             {
@@ -179,53 +177,17 @@ namespace Northwind.Gui.Desktop
                 comboBox_Customer.SelectedItem = viewModel.Customers.Where(c => c.CustomerID == viewModel.SelectedOrder.CustomerID).ToList()[0];
                 comboBox_Employee.SelectedItem = viewModel.Employees.Where(c => c.EmployeeID == viewModel.SelectedOrder.EmployeeID).ToList()[0];
 
-                // Order Date DatePickers
-                datePicker_OrderDate.IsEnabled = false;
-                datePicker_RequiredDate.IsEnabled = false;
-                datePicker_ShippedDate.IsEnabled = false;
-
-                // Shipping Detail TextBoxes
-                textBox_Freight.IsReadOnly = true;
-                textBox_ShipAddress.IsReadOnly = true;
-                textBox_ShipCity.IsReadOnly = true;
-                textBox_ShipCountry.IsReadOnly = true;
-                textBox_ShipName.IsReadOnly = true;
-                textBox_ShipPostalCode.IsReadOnly = true;
-                textBox_ShipRegion.IsReadOnly = true;
-                textBox_ShipVia.IsReadOnly = true;
-
-                // Order Detail TextBoxes
-                textBox_ProductID.IsReadOnly = true;
-                textBox_UnitPrice.IsReadOnly = true;
-                textBox_Quantity.IsReadOnly = true;
-                textBox_Discount.IsReadOnly = true;
-
-                // ComboBoxes
-                comboBox_Customer.IsEnabled = false;
-                comboBox_Employee.IsEnabled = false;
-
-                // Buttons
+                // Enable
                 button_EditOrder.IsEnabled = true;
-                button_NewOrder.IsEnabled = true;
-                button_SaveOrder.IsEnabled = false;
-                button_NewOrderDetail.IsEnabled = false;
             }
-            else if(viewModel.SelectedOrder == null)
+            else
             {
-                // Deselect anything in the comboboxes and disable
+                // Reset 
                 comboBox_Customer.SelectedItem = null;
                 comboBox_Employee.SelectedItem = null;
-                comboBox_Customer.IsEnabled = false;
-                comboBox_Employee.IsEnabled = false;
 
-                // Buttons
+                // Disable
                 button_EditOrder.IsEnabled = false;
-                button_SaveOrder.IsEnabled = false;
-                button_NewOrder.IsEnabled = true;
-                button_SaveOrderDetail.IsEnabled = false;
-                button_DeleteOrderDetail.IsEnabled = false;
-                button_NewOrderDetail.IsEnabled = false;
-                button_EditOrderDetail.IsEnabled = false;
             }
         }
 
@@ -234,141 +196,130 @@ namespace Northwind.Gui.Desktop
         #region Detail Events
         private void Button_EditOrderDetail_Click(object sender, RoutedEventArgs e)
         {
-            if(viewModel.SelectedOrderDetail != null)
-            {
-                if(textBox_ProductID.IsReadOnly == true)
-                {
-                    // Order Detail TextBoxes
-                    textBox_ProductID.IsReadOnly = false;
-                    textBox_UnitPrice.IsReadOnly = false;
-                    textBox_Quantity.IsReadOnly = false;
-                    textBox_Discount.IsReadOnly = false;
+            // Enable
+            button_SaveOrderDetail.IsEnabled = true;
+            button_DeleteOrderDetail.IsEnabled = true;
+            textBox_ProductID.IsReadOnly = false;
+            textBox_UnitPrice.IsReadOnly = false;
+            textBox_Quantity.IsReadOnly = false;
+            textBox_Discount.IsReadOnly = false;
 
-                    // Buttons
-                    button_SaveOrderDetail.IsEnabled = true;
-                    button_DeleteOrderDetail.IsEnabled = true;
-                    button_NewOrderDetail.IsEnabled = false;
-                    button_EditOrderDetail.IsEnabled = false;
-                }
-            }
-            else
-            {
-                if(viewModel.SelectedOrder != null)
-                {
-                    MessageBox.Show("Please select an order detail", "No Order Detail Selected", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Please select an order", "No Order Selected", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
+            // Disable
+            button_NewOrderDetail.IsEnabled = false;
+            button_EditOrderDetail.IsEnabled = false;
         }
 
         private void Button_SaveOrderDetail_Click(object sender, RoutedEventArgs e)
         {
-            if(textBox_ProductID.Text == string.Empty || textBox_UnitPrice.Text == string.Empty || textBox_Quantity.Text == string.Empty || textBox_Discount.Text == string.Empty)
+            if(viewModel.SelectedOrder != null)
             {
-                MessageBox.Show("Please fill out all order details", "All Details Not Filled", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                if(viewModel.SelectedOrder != null)
+                if(viewModel.SelectedOrderDetail != null)
                 {
-                    OrderDetail orderDetail = new OrderDetail(viewModel.SelectedOrder.OrderID, Convert.ToInt32(textBox_ProductID.Text), Convert.ToDecimal(textBox_UnitPrice.Text), Convert.ToSByte(textBox_Quantity.Text), Convert.ToUInt64(textBox_Discount.Text));
+                    // Update
+                    try
+                    {
+                        // Create object
+                        OrderDetail updatedOrderDetail = new OrderDetail(
+                            viewModel.SelectedOrder.OrderID,
+                            Convert.ToInt32(textBox_ProductID.Text),
+                            Convert.ToDecimal(textBox_UnitPrice.Text),
+                            Convert.ToInt16(textBox_Quantity.Text),
+                            Convert.ToSingle(textBox_Discount.Text));
 
-                    viewModel.SelectedOrder.OrderDetails.Add(orderDetail);
+                        // Insert into the DB
+                        repository.UpdateOrderDetail(updatedOrderDetail);
+                        // Remove old data from ViewModel
+                        viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
+                        // Add new data to viewModel
+                        viewModel.SelectedOrder.OrderDetails.Add(updatedOrderDetail);
+                        // Set as selected
+                        listView_OrderDetails.SelectedItem = updatedOrderDetail;
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "An error occured", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Please select an order, to add an order detail to.", "Cannot Add Order Detail", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    // New OrderDetail
+                    try
+                    {
+                        // Create object
+                        OrderDetail newOrderDetail = new OrderDetail(
+                            viewModel.SelectedOrder.OrderID,
+                            Convert.ToInt32(textBox_ProductID.Text),
+                            Convert.ToDecimal(textBox_UnitPrice.Text),
+                            Convert.ToInt16(textBox_Quantity.Text),
+                            Convert.ToSingle(textBox_Discount.Text));
+
+                        // Insert into the DB
+                        repository.InsertOrderDetail(newOrderDetail);
+                        // Add to the ViewModel
+                        viewModel.SelectedOrder.OrderDetails.Add(newOrderDetail);
+                        // Set as selected
+                        listView_OrderDetails.SelectedItem = newOrderDetail;
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "An error occured", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                } 
+            }
+            else
+            {
+                MessageBox.Show("Please select an order first.", "No Order Selected", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Button_NewOrderDetail_Click(object sender, RoutedEventArgs e)
         {
-            if(viewModel.SelectedOrder != null)
-            {
-                // Deselect the SelectedItem
-                listView_OrderDetails.SelectedItem = null; ;
+            // Reset SelectedItem
+            listView_OrderDetails.SelectedItem = null;
 
-                // Enable TextBoxes
-                textBox_ProductID.IsReadOnly = false;
-                textBox_UnitPrice.IsReadOnly = false;
-                textBox_Quantity.IsReadOnly = false;
-                textBox_Discount.IsReadOnly = false;
+            // Enable
+            button_SaveOrderDetail.IsEnabled = true;
+            textBox_ProductID.IsReadOnly = false;
+            textBox_UnitPrice.IsReadOnly = false;
+            textBox_Quantity.IsReadOnly = false;
+            textBox_Discount.IsReadOnly = false;
 
-                // Buttons
-                button_SaveOrderDetail.IsEnabled = true;
-                button_NewOrderDetail.IsEnabled = false;
-            }
+            // Disable
+            button_NewOrderDetail.IsEnabled = false;
+            button_EditOrderDetail.IsEnabled = false;
         }
 
         private void Button_DeleteOrderDetail_Click(object sender, RoutedEventArgs e)
         {
-            // Repository object for quering
-            Repository repository = new Repository();
-
-            // SQL Query
-            string query = $"DELETE FROM [Order Details] WHERE ProductID = {viewModel.SelectedOrderDetail.ProductID}";
-
-            // Execute query
-            repository.Execute(query);
+            // Delete the order detail
+            repository.DeleteOrderDetail(viewModel.SelectedOrderDetail);
 
             // Remove the OrderDetail from the ViewModel
-            viewModel.SelectedOrder.OrderDetails.RemoveAll(c => c.ProductID == viewModel.SelectedOrderDetail.ProductID);
+            viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
         }
 
         private void ListView_OrderDetails_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(viewModel.SelectedOrder != null)
-            {
-                if(button_SaveOrder.IsEnabled == true)
-                {
-                    button_EditOrderDetail.IsEnabled = true;
-                    button_NewOrderDetail.IsEnabled = true;
-                }
-                if(button_SaveOrder.IsEnabled == false)
-                {
-                    button_EditOrderDetail.IsEnabled = false;
-                    button_NewOrderDetail.IsEnabled = false;
-                    button_SaveOrderDetail.IsEnabled = false;
-                    button_DeleteOrderDetail.IsEnabled = false;
-                }
-                if(viewModel.SelectedOrderDetail == null)
-                {
-                    button_EditOrderDetail.IsEnabled = false;
-                    button_SaveOrderDetail.IsEnabled = false;
-                    button_DeleteOrderDetail.IsEnabled = false;
-                }
-                if(viewModel.SelectedOrderDetail != null)
-                {
-                    button_SaveOrderDetail.IsEnabled = false;
-                    button_DeleteOrderDetail.IsEnabled = false;
-                }
-            }
+            // Enable
+            button_NewOrderDetail.IsEnabled = true;
 
-            // Order Detail TextBoxes
+            // Disable
+            button_SaveOrderDetail.IsEnabled = false;
+            button_DeleteOrderDetail.IsEnabled = false;
             textBox_ProductID.IsReadOnly = true;
             textBox_UnitPrice.IsReadOnly = true;
             textBox_Quantity.IsReadOnly = true;
             textBox_Discount.IsReadOnly = true;
 
-            // make sure there is at least one item
-            if(e.AddedItems.Count > 0)
+            if(viewModel.SelectedOrderDetail != null)
             {
-                // cast object
-                OrderDetail firstItem = e.AddedItems[0] as OrderDetail;
-
-                // if not null
-                if(firstItem != null)
-                {
-                    // Create object
-                    OrderDetail orderDetail = new OrderDetail(firstItem.OrderID, firstItem.ProductID, firstItem.UnitPrice, firstItem.Quantity, firstItem.Discount);
-
-                    // Set SelectedOrderDetail
-                    viewModel.SelectedOrderDetail = orderDetail;
-                }
+                // Enable
+                button_EditOrderDetail.IsEnabled = true;
+            }
+            else
+            {
+                // Disable
+                button_EditOrderDetail.IsEnabled = false;
             }
         }
         #endregion
