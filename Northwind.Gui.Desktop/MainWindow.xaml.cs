@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Northwind.DataAccess;
 using Northwind.Entities;
 
@@ -179,6 +170,7 @@ namespace Northwind.Gui.Desktop
 
                 // Enable
                 button_EditOrder.IsEnabled = true;
+                button_NewOrderDetail.IsEnabled = true;
             }
             else
             {
@@ -188,6 +180,7 @@ namespace Northwind.Gui.Desktop
 
                 // Disable
                 button_EditOrder.IsEnabled = false;
+                button_NewOrderDetail.IsEnabled = false;
             }
         }
 

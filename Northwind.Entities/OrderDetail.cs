@@ -1,18 +1,25 @@
 ﻿using Northwind.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Northwind.Entities
 {
     public class OrderDetail
     {
+        // Fields
         protected int orderID;
         protected int productID;
         protected decimal unitPrice;
         protected short quantity;
         protected float discount;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="OrderDetail"/> class.
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <param name="productID"></param>
+        /// <param name="unitPrice"></param>
+        /// <param name="quantity"></param>
+        /// <param name="discount"></param>
         public OrderDetail(int orderID, int productID, decimal unitPrice, short quantity, float  discount)
         {
             OrderID = orderID;
@@ -22,6 +29,9 @@ namespace Northwind.Entities
             Discount = discount;
         }
 
+        /// <summary>
+        /// Represents the ID of the <see cref="OrderDetail"/>
+        /// </summary>
         public virtual int OrderID
         {
             get
@@ -45,6 +55,9 @@ namespace Northwind.Entities
             }
         }
 
+        /// <summary>
+        /// Represents the ID of the product
+        /// </summary>
         public virtual int ProductID
         {
             get
@@ -68,6 +81,9 @@ namespace Northwind.Entities
             }
         }
 
+        /// <summary>
+        /// Represents the unit price of the product
+        /// </summary>
         public virtual decimal UnitPrice
         {
             get
@@ -91,6 +107,9 @@ namespace Northwind.Entities
             }
         }
 
+        /// <summary>
+        /// Represents the quantity of the ordered products
+        /// </summary>
         public virtual short Quantity
         {
             get
@@ -114,6 +133,9 @@ namespace Northwind.Entities
             }
         }
 
+        /// <summary>
+        /// Represents the discount of the order
+        /// </summary>
         public virtual float Discount
         {
             get

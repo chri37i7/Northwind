@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Northwind.DataAccess\Northwind.DataAccess.csproj" />
     <ProjectReference Include="..\Northwind.Entities\Northwind.Entities.csproj" />
+    <ProjectReference Include="..\Northwind.Services\Northwind.Services.csproj" />
     <ProjectReference Include="..\Northwind.Utilities\Northwind.Utilities.csproj" />
   </ItemGroup>
 

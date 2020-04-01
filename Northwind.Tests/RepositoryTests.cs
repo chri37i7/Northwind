@@ -1,8 +1,5 @@
 ﻿using Northwind.DataAccess;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using Xunit;
 
 namespace Northwind.Tests
@@ -17,6 +14,8 @@ namespace Northwind.Tests
 
             // Act:
             repository = new Repository();
+
+            // Assert
         }
 
         [Fact]

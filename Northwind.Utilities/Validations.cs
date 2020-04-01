@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Northwind.Utilities
+﻿namespace Northwind.Utilities
 {
     public static class Validations
     {
@@ -30,6 +27,17 @@ namespace Northwind.Utilities
             }
         }
 
+        public static (bool, string) ValidateIsDoubleNegative(double number)
+        {
+            if(number < 0)
+            {
+                return (false, "The number cannot be lower than 0");
+            }
+            else
+            {
+                return (true, string.Empty);
+            }
+        }
         public static (bool, string) ValidateIsFloatNegative(float number)
         {
             if(number < 0)
