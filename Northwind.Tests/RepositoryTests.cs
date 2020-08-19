@@ -19,7 +19,7 @@ namespace Northwind.Tests
         }
 
         [Fact]
-        public void CanExecuteSql()
+        public async void CanExecuteSql()
         {
             // Arrange:
             string query = "SELECT * FROM Orders";
@@ -28,7 +28,7 @@ namespace Northwind.Tests
             int rowCount;
 
             // Act:
-            result = repository.Execute(query);
+            result = await repository.ExecuteAsync(query);
 
             // Assert:
             rowCount = result.Tables[0].Rows.Count;

@@ -5,6 +5,7 @@ using System.Data.Common;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using Northwind.Entities;
+using System.Threading.Tasks;
 
 namespace Northwind.DataAccess
 {
@@ -17,17 +18,21 @@ namespace Northwind.DataAccess
         const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=5;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         #endregion
 
-
         #region Constructors
         /// <summary>
         /// Initializes a new instance of Repository. Attempts to establish a connection, and will throw an exception on connection error.
         /// </summary>
         public Repository()
         {
+            Init();
+        }
+
+        public virtual async void Init()
+        {
             try
             {
-                SqlConnection connection = GetConnection(connectionString) as SqlConnection;
-                (bool, Exception) connectionAttemptResult = TryConnectUsing(connection);
+                SqlConnection connection = await Task.Factory.StartNew(() => GetConnection(connectionString) as SqlConnection);
+                (bool, Exception) connectionAttemptResult = await TryConnectUsingAsync(connection);
             }
             catch(Exception e)
             {
@@ -36,8 +41,8 @@ namespace Northwind.DataAccess
         }
         #endregion
 
-
         #region Helper Methods
+
         /// <summary>
         /// Executes the provided SQL statement and returns data wrapped in a data set, if any.
         /// </summary>
@@ -45,7 +50,7 @@ namespace Northwind.DataAccess
         /// <returns>A <see cref="DataSet"/> wrapping any returned data.</returns>
         /// <exception cref="ArgumentException"/>
         /// <exception cref=""
-        public DataSet Execute(string query)
+        public virtual async Task<DataSet> ExecuteAsync(string query)
         {
             if(string.IsNullOrWhiteSpace(query))
             {
@@ -54,10 +59,10 @@ namespace Northwind.DataAccess
             DataSet resultSet = new DataSet();
             try
             {
-                SqlConnection connection = GetConnection(connectionString) as SqlConnection;
+                SqlConnection connection = await Task.Factory.StartNew(() => GetConnection(connectionString)) as SqlConnection;
                 using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
                 {
-                    adapter.Fill(resultSet);
+                    await Task.Factory.StartNew(() => adapter.Fill(resultSet));
                 }
                 return resultSet;
             }
@@ -66,6 +71,8 @@ namespace Northwind.DataAccess
                 throw new Exception("Data access error. See inner exception for details", e);
             }
         }
+
+        #region Connection Methods
 
         /// <summary>
         /// Creates a connection based on the name of the input parameter connection string.
@@ -83,14 +90,14 @@ namespace Northwind.DataAccess
         /// </summary>
         /// <param name="connection">The connection to use.</param>
         /// <returns>True, if the connection could be established, false otherwise.</returns>
-        public (bool, Exception) TryConnectUsing(DbConnection connection)
+        public async Task<(bool, Exception)> TryConnectUsingAsync(DbConnection connection)
         {
             try
             {
                 using(connection)
                 {
-                    connection.Open();
-                    connection.Close();
+                    await connection.OpenAsync();
+                    await connection.CloseAsync();
                 }
                 return (true, null);
             }
@@ -99,13 +106,16 @@ namespace Northwind.DataAccess
                 return (false, e);
             }
         }
+        #endregion
+
+        #region Extraction Methods
 
         /// <summary>
         /// Extract all data relevant to an Order from a datarow object, and return an order object.
         /// </summary>
         /// <param name="dataRow"></param>
         /// <returns></returns>
-        private static Order ExtractOrderFrom(DataRow dataRow)
+        private static async Task<Order> ExtractOrderFromAsync(DataRow dataRow)
         {
             // Repository object for querying
             Repository repository = new Repository();
@@ -131,14 +141,14 @@ namespace Northwind.DataAccess
             // Query for getting Order details related to the order
             string query = $"SELECT * FROM [Order Details] WHERE OrderID = {orderID};";
             // Execute the query
-            DataSet details = repository.Execute(query);
+            DataSet details = await repository.ExecuteAsync(query);
 
             // If the query returned any results
             if(details.Tables.Count > 0 && details.Tables[0].Rows.Count > 0)
             {
                 foreach(DataRow resultDataRow in details.Tables[0].Rows)
                 {
-                    OrderDetail detail = ExtractOrderDetailFrom(resultDataRow);
+                    OrderDetail detail = await Task.Factory.StartNew(() => ExtractOrderDetailFrom(resultDataRow));
                     orderDetails.Add(detail);
                 }
             }
@@ -230,44 +240,18 @@ namespace Northwind.DataAccess
         }
         #endregion
 
+        #endregion
 
         #region Repository Methods
 
         #region Order Methods
-        /// <summary>
-        /// Gets all orders.
-        /// </summary>
-        /// <returns>A list of all orders</returns>
-        public List<Order> GetAllOrders()
-        {
-            List<Order> orders = new List<Order>();
-            string query = "SELECT * FROM Orders";
-            DataSet resultSet;
-            try
-            {
-                resultSet = Execute(query);
-            }
-            catch(Exception)
-            {
-                throw;
-            }
-            if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
-            {
-                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
-                {
-                    Order order = ExtractOrderFrom(dataRow);
-                    orders.Add(order);
-                }
-            }
-            return orders;
-        }
 
         /// <summary>
         /// Inserts the order into the database, and returns it with its ID
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        public Order InsertOrder(Order order)
+        public async Task<Order> InsertOrderAsync(Order order)
         {
             string query = $"INSERT INTO Orders(CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) " +
                 $"VALUES('{order.CustomerID}','{order.EmployeeID}','{order.OrderDate}','{order.RequiredDate}'," +
@@ -275,7 +259,7 @@ namespace Northwind.DataAccess
                 $"'{order.ShipAddress}','{order.ShipCity}','{order.ShipRegion}','{order.ShipPostalCode}','{order.ShipCountry}') " +
                 $"SELECT * FROM Orders WHERE OrderID = SCOPE_IDENTITY()";
 
-            DataSet insertQuery = Execute(query);
+            DataSet insertQuery = await ExecuteAsync(query);
 
             List<OrderDetail> orderDetails = new List<OrderDetail>();
 
@@ -304,7 +288,7 @@ namespace Northwind.DataAccess
         /// Updates the order in the database
         /// </summary>
         /// <param name="order"></param>
-        public void UpdateOrder(Order order)
+        public async Task UpdateOrderAsync(Order order)
         {
             string query = $"UPDATE Orders SET CustomerID = '{order.CustomerID}', " +
                 $"EmployeeID = '{order.EmployeeID}', " +
@@ -321,7 +305,7 @@ namespace Northwind.DataAccess
                 $"ShipCountry = '{order.ShipCountry}' " +
                 $"WHERE OrderID = '{order.OrderID}'";
 
-            Execute(query);
+            await ExecuteAsync(query);
         }
         #endregion
 
@@ -332,51 +316,52 @@ namespace Northwind.DataAccess
         /// </summary>
         /// <param name="orderDetail"></param>
         /// <returns></returns>
-        public void InsertOrderDetail(OrderDetail orderDetail)
+        public async Task InsertOrderDetailAsync(OrderDetail orderDetail)
         {
             string query = $"INSERT INTO [Order Details](OrderID, ProductID, UnitPrice, Quantity, Discount) " +
                 $"VALUES('{orderDetail.OrderID}','{orderDetail.ProductID}','{orderDetail.UnitPrice}','{orderDetail.Quantity}','{orderDetail.Discount}')";
 
-            Execute(query);
+            await ExecuteAsync(query);
         }
 
         /// <summary>
         /// Updates an order detail in the database
         /// </summary>
         /// <param name="orderDetail"></param>
-        public void UpdateOrderDetail(OrderDetail orderDetail)
+        public async Task UpdateOrderDetailAsync(OrderDetail orderDetail)
         {
             string query = $"UPDATE [Order Details] SET UnitPrice = '{Math.Round(orderDetail.UnitPrice, 2)}', Quantity = '{orderDetail.Quantity}', Discount = '{orderDetail.Discount}' WHERE ProductID = '{orderDetail.ProductID}'";
 
-            Execute(query);
+            await ExecuteAsync(query);
         }
 
         /// <summary>
         /// Deletes an order detail from the database
         /// </summary>
         /// <param name="orderDetail"></param>
-        public void DeleteOrderDetail(OrderDetail orderDetail)
+        public async Task DeleteOrderDetailAsync(OrderDetail orderDetail)
         {
             string query = $"DELETE FROM [Order Details] WHERE ProductID = '{orderDetail.ProductID}'";
 
-            Execute(query);
+            await ExecuteAsync(query);
         }
 
         #endregion
 
-        #region Customer & Employee Methods
+        #region Get Data Methods
+
         /// <summary>
         /// Gets all orders.
         /// </summary>
         /// <returns>A list of all orders</returns>
-        public List<Customer> GetAllCustomers()
+        public async Task<List<Order>> GetAllOrdersAsync()
         {
-            List<Customer> customers = new List<Customer>();
-            string query = "SELECT * FROM Customers";
+            List<Order> orders = new List<Order>();
+            string query = "SELECT * FROM Orders";
             DataSet resultSet;
             try
             {
-                resultSet = Execute(query);
+                resultSet = await ExecuteAsync(query);
             }
             catch(Exception)
             {
@@ -386,7 +371,35 @@ namespace Northwind.DataAccess
             {
                 foreach(DataRow dataRow in resultSet.Tables[0].Rows)
                 {
-                    Customer customer = ExtractCustomerFrom(dataRow);
+                    Order order = await ExtractOrderFromAsync(dataRow);
+                    orders.Add(order);
+                }
+            }
+            return orders;
+        }
+
+        /// <summary>
+        /// Gets all orders.
+        /// </summary>
+        /// <returns>A list of all orders</returns>
+        public async Task<List<Customer>> GetAllCustomersAsync()
+        {
+            List<Customer> customers = new List<Customer>();
+            string query = "SELECT * FROM Customers";
+            DataSet resultSet;
+            try
+            {
+                resultSet = await ExecuteAsync(query);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
+            {
+                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                {
+                    Customer customer = await Task.Factory.StartNew(() => ExtractCustomerFrom(dataRow));
                     customers.Add(customer);
                 }
             }
@@ -397,14 +410,14 @@ namespace Northwind.DataAccess
         /// Gets all orders.
         /// </summary>
         /// <returns>A list of all orders</returns>
-        public List<Employee> GetAllEmployees()
+        public async Task<List<Employee>> GetAllEmployeesAsync()
         {
             List<Employee> employees = new List<Employee>();
             string query = "SELECT * FROM Employees";
             DataSet resultSet;
             try
             {
-                resultSet = Execute(query);
+                resultSet = await ExecuteAsync(query);
             }
             catch(Exception)
             {
@@ -414,7 +427,7 @@ namespace Northwind.DataAccess
             {
                 foreach(DataRow dataRow in resultSet.Tables[0].Rows)
                 {
-                    Employee employee = ExtractEmployeeFrom(dataRow);
+                    Employee employee = await Task.Factory.StartNew(() => ExtractEmployeeFrom(dataRow));
                     employees.Add(employee);
                 }
             }

@@ -1,39 +1,176 @@
 ﻿using Northwind.DataAccess;
 using Northwind.Entities;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Northwind.Gui.Desktop
 {
-    public class ViewModel
+    public class ViewModel : INotifyPropertyChanged
     {
-        // Fields
-        private readonly Repository repository;
+        #region Fields
+        protected Repository repository;
+        protected ObservableCollection<Order> orders;
+        protected Order selectedOrder;
+        protected OrderDetail selectedOrderDetail;
+        protected ObservableCollection<Customer> customers;
+        protected Customer selectedCustomer;
+        protected ObservableCollection<Employee> employees;
+        protected Employee selectedEmployee;
+        #endregion
 
-        // Constructor
+        #region Constructor
         public ViewModel()
         {
             // Initialize repository
             repository = new Repository();
 
-            // Get all orders from the database
-            List<Order> orders = repository.GetAllOrders();
-            List<Customer> customers = repository.GetAllCustomers();
-            List<Employee> employees = repository.GetAllEmployees();
+            // Initialize properties
+            InitializeAsync();
+        }
+        #endregion
 
-            // Initialize ObServableCollection
-            Orders = new ObservableCollection<Order>(orders);
-            Customers = new ObservableCollection<Customer>(customers);
-            Employees = new ObservableCollection<Employee>(employees);
+        #region Properties
+        public virtual ObservableCollection<Order> Orders
+        {
+            get
+            {
+                return orders;
+            }
+            set
+            {
+                if(orders != value)
+                {
+                    orders = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
-        // ViewModel Properties
-        public virtual ObservableCollection<Order> Orders { get; set; }
-        public virtual Order SelectedOrder { get; set; }
-        public virtual OrderDetail SelectedOrderDetail { get; set; }
-        public virtual ObservableCollection<Customer> Customers { get; set; }
-        public virtual Customer SelectedCustomer { get; set; }
-        public virtual ObservableCollection<Employee> Employees { get; set; }
-        public virtual Employee SelectedEmployee { get; set; }
+        public virtual Order SelectedOrder
+        {
+            get
+            {
+                return selectedOrder;
+            }
+            set
+            {
+                if(selectedOrder != value)
+                {
+                    selectedOrder = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual OrderDetail SelectedOrderDetail
+        {
+            get
+            {
+                return selectedOrderDetail;
+            }
+            set
+            {
+                if(selectedOrderDetail != value)
+                {
+                    selectedOrderDetail = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual ObservableCollection<Customer> Customers
+        {
+            get
+            {
+                return customers;
+            }
+            set
+            {
+                if(customers != value)
+                {
+                    customers = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual Customer SelectedCustomer
+        {
+            get
+            {
+                return selectedCustomer;
+            }
+            set
+            {
+                if(selectedCustomer != value)
+                {
+                    selectedCustomer = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual ObservableCollection<Employee> Employees
+        {
+            get
+            {
+                return employees;
+            }
+            set
+            {
+                if(employees != value)
+                {
+                    employees = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual Employee SelectedEmployee
+        {
+            get
+            {
+                return selectedEmployee;
+            }
+            set
+            {
+                if(selectedEmployee != value)
+                {
+                    selectedEmployee = value;
+
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region Initialization Method
+        public virtual async void InitializeAsync()
+        {
+            // Initialize ObservableCollections
+            Orders = new ObservableCollection<Order>(await repository.GetAllOrdersAsync());
+            Customers = new ObservableCollection<Customer>(await repository.GetAllCustomersAsync());
+            Employees = new ObservableCollection<Employee>(await repository.GetAllEmployeesAsync());
+        }
+        #endregion
+
+        #region INotifyPropertyChanged Implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            if(PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
     }
 }

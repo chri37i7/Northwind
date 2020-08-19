@@ -28,7 +28,7 @@ namespace Northwind.Gui.Desktop
 
         #region Master Events
 
-        private void Button_SaveOrder_Click(object sender, RoutedEventArgs e)
+        private async void Button_SaveOrder_Click(object sender, RoutedEventArgs e)
         {
             if(viewModel.SelectedOrder != null)
             {
@@ -58,7 +58,7 @@ namespace Northwind.Gui.Desktop
                 // Select the new order
                 listView_Orders.SelectedItem = updatedOrder;
                 // Update the order in the DB
-                repository.UpdateOrder(updatedOrder);
+                await repository.UpdateOrderAsync(updatedOrder);
             }
             else
             {
@@ -82,7 +82,7 @@ namespace Northwind.Gui.Desktop
                         textBox_ShipCountry.Text,
                         orderDetails);
 
-                    viewModel.Orders.Add(repository.InsertOrder(newOrder));
+                    viewModel.Orders.Add(await repository.InsertOrderAsync(newOrder));
                     listView_Orders.SelectedItem = newOrder;
                 }
                 catch(Exception ex)
@@ -202,7 +202,7 @@ namespace Northwind.Gui.Desktop
             button_EditOrderDetail.IsEnabled = false;
         }
 
-        private void Button_SaveOrderDetail_Click(object sender, RoutedEventArgs e)
+        private async void Button_SaveOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             if(viewModel.SelectedOrder != null)
             {
@@ -220,7 +220,7 @@ namespace Northwind.Gui.Desktop
                             Convert.ToSingle(textBox_Discount.Text));
 
                         // Insert into the DB
-                        repository.UpdateOrderDetail(updatedOrderDetail);
+                        await repository.UpdateOrderDetailAsync(updatedOrderDetail);
                         // Remove old data from ViewModel
                         viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
                         // Add new data to viewModel
@@ -247,7 +247,7 @@ namespace Northwind.Gui.Desktop
                             Convert.ToSingle(textBox_Discount.Text));
 
                         // Insert into the DB
-                        repository.InsertOrderDetail(newOrderDetail);
+                        await repository.InsertOrderDetailAsync(newOrderDetail);
                         // Add to the ViewModel
                         viewModel.SelectedOrder.OrderDetails.Add(newOrderDetail);
                         // Set as selected
@@ -257,7 +257,7 @@ namespace Northwind.Gui.Desktop
                     {
                         MessageBox.Show(ex.Message, "An error occured", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                } 
+                }
             }
             else
             {
@@ -282,10 +282,10 @@ namespace Northwind.Gui.Desktop
             button_EditOrderDetail.IsEnabled = false;
         }
 
-        private void Button_DeleteOrderDetail_Click(object sender, RoutedEventArgs e)
+        private async void Button_DeleteOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             // Delete the order detail
-            repository.DeleteOrderDetail(viewModel.SelectedOrderDetail);
+            await repository.DeleteOrderDetailAsync(viewModel.SelectedOrderDetail);
 
             // Remove the OrderDetail from the ViewModel
             viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
