@@ -25,11 +25,12 @@ namespace Northwind.Services
             // Check if the Api endpoint is reachable
             try
             {
+                HttpClient client = new HttpClient();
+
                 // Get response from the url host
-                using HttpClient client = new HttpClient();
-                {
-                    httpResponse = client.GetAsync(url);
-                }
+                httpResponse = client.GetAsync(url);
+
+                client.Dispose();
             }
             // Catch any exception and throw new argument exception
             catch(Exception e)
@@ -62,7 +63,7 @@ namespace Northwind.Services
                 ExchangeRate exchangeRate = new ExchangeRate(dictItem.Key.ToString(), Convert.ToDouble(dictItem.Value.ToString()));
                 rates.Add(exchangeRate);
             }
-            
+
             // Return the List
             return rates;
         }
