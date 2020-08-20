@@ -21,13 +21,19 @@ namespace Northwind.Gui.Desktop
             InitializeComponent();
         }
 
-        public override void EndInit()
+        public async override void EndInit()
         {
+            // Prevents crash on startup
             base.EndInit();
 
+            // Initialize viewModel
             viewModel = new ViewModel();
+            await viewModel.InitializeAsync();
+
+            // Assign viewModel to DataContext
             DataContext = viewModel;
 
+            // Initialize repository
             repository = new Repository();
         }
 

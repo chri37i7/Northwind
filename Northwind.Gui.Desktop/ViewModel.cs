@@ -3,6 +3,7 @@ using Northwind.Entities;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Northwind.Gui.Desktop
 {
@@ -22,11 +23,6 @@ namespace Northwind.Gui.Desktop
         #region Constructor
         public ViewModel()
         {
-            // Initialize repository
-            repository = new Repository();
-
-            // Initialize properties
-            InitializeAsync();
         }
         #endregion
 
@@ -152,8 +148,11 @@ namespace Northwind.Gui.Desktop
         #endregion
 
         #region Initialization Method
-        public virtual async void InitializeAsync()
+        public virtual async Task InitializeAsync()
         {
+            // Initialize repository
+            repository = new Repository();
+
             // Initialize ObservableCollections
             Orders = new ObservableCollection<Order>(await repository.GetAllOrdersAsync());
             Customers = new ObservableCollection<Customer>(await repository.GetAllCustomersAsync());
