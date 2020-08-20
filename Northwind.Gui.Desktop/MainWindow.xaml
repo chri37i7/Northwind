@@ -8,8 +8,9 @@
         Width="920"
         Height="750"
         Title="Northwind Order Administration System"
-        Loaded="OnLoaded">
+        Loaded="OnLoadedAsync">
     <Grid>
+        
         <!-- #region Columns and Rows-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
@@ -374,6 +375,7 @@
                       Margin="5"
                       Header="Order Details">
                 <Grid>
+                    
                     <!--#region Columns and rows-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -540,10 +542,12 @@
                         <!--#endregion-->
                     </Grid>
                     <!--#endregion-->
+                    
                 </Grid>
             </GroupBox>
         </Grid>
 
         <!-- #endregion -->
+        
     </Grid>
 </Window>

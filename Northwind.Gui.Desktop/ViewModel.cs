@@ -1,5 +1,6 @@
 ﻿using Northwind.DataAccess;
 using Northwind.Entities;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -148,13 +149,23 @@ namespace Northwind.Gui.Desktop
         #region Initialization Method
         public virtual async Task InitializeAsync()
         {
-            // Initialize repository
-            repository = new Repository();
+            try
+            {
+                // Initialize repository
+                repository = new Repository();
 
-            // Initialize ObservableCollections
-            Orders = new ObservableCollection<Order>(await repository.GetAllOrdersAsync());
-            Customers = new ObservableCollection<Customer>(await repository.GetAllCustomersAsync());
-            Employees = new ObservableCollection<Employee>(await repository.GetAllEmployeesAsync());
+                // Test connection by running InitializeAsync
+                await repository.InitializeAsync();
+
+                // Initialize ObservableCollections
+                Orders = new ObservableCollection<Order>(await repository.GetAllOrdersAsync());
+                Customers = new ObservableCollection<Customer>(await repository.GetAllCustomersAsync());
+                Employees = new ObservableCollection<Employee>(await repository.GetAllEmployeesAsync());
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
         #endregion
 

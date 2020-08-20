@@ -21,19 +21,29 @@ namespace Northwind.Gui.Desktop
             InitializeComponent();
         }
 
-        private async void OnLoaded(object sender, RoutedEventArgs e)
+        private async void OnLoadedAsync(object sender, RoutedEventArgs e)
         {
-            // Initialize repository
-            repository = new Repository();
+            try
+            {
+                // Initialize viewModel
+                viewModel = new ViewModel();
 
-            // Initialize viewModel
-            viewModel = new ViewModel();
+                // Assign viewModel to DataContext
+                DataContext = viewModel;
 
-            // Assign viewModel to DataContext
-            DataContext = viewModel;
+                // Initialize viewModel Observeable Collections
+                await viewModel.InitializeAsync();
 
-            // Initialize viewModel Observeable Collections
-            await viewModel.InitializeAsync();
+                // Initialize repository
+                repository = new Repository();
+
+                // Run InitializeAsync to test connection to DB
+                await repository.InitializeAsync();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "An Error Occurred", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #region Master Events

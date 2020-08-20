@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using System.Linq;
 using Northwind.Entities;
 using System.Threading.Tasks;
+using System.Runtime.ExceptionServices;
 
 namespace Northwind.DataAccess
 {
@@ -14,7 +15,7 @@ namespace Northwind.DataAccess
     /// </summary>
     public class Repository
     {
-        #region Fields and constants
+        #region Connection String
         const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=5;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         #endregion
 
@@ -22,21 +23,31 @@ namespace Northwind.DataAccess
         /// <summary>
         /// Initializes a new instance of Repository. Attempts to establish a connection, and will throw an exception on connection error.
         /// </summary>
-        public Repository()
-        {
-            Init();
-        }
+        public Repository() { }
 
-        public virtual async void Init()
+        public virtual async Task InitializeAsync()
         {
             try
             {
-                SqlConnection connection = await Task.Run(() => GetConnection(connectionString) as SqlConnection);
-                (bool, Exception) connectionAttemptResult = await TryConnectUsingAsync(connection);
+                // Run the operation on a seperate thread
+                await Task.Run(async () =>
+                {
+                    try
+                    {
+                        // Get connection to the database
+                        SqlConnection connection = GetConnection(connectionString) as SqlConnection;
+                        // Test connection to the database
+                        (bool, Exception) connectionAttemptResult = await TryConnectUsingAsync(connection);
+                    }
+                    catch(Exception)
+                    {
+                        throw;
+                    }
+                });
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                throw new Exception("Data access error. See inner exception for details", e);
+                throw;
             }
         }
         #endregion
@@ -52,24 +63,44 @@ namespace Northwind.DataAccess
         /// <exception cref=""
         public virtual async Task<DataSet> ExecuteAsync(string query)
         {
+            // Check if the query is empty
             if(string.IsNullOrWhiteSpace(query))
             {
                 throw new ArgumentException("Null or whitespace.");
             }
+
+            // Declare and initialize a DataSet object
             DataSet resultSet = new DataSet();
+
             try
             {
-                SqlConnection connection = await Task.Run(() => GetConnection(connectionString) as SqlConnection);
-                using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
+                // Run the operation on a seperate thread
+                await Task.Run(() =>
                 {
-                    await Task.Run(() => adapter.Fill(resultSet));
-                }
-                return resultSet;
+                    try
+                    {
+                        // Get connection to the database
+                        SqlConnection connection = GetConnection(connectionString) as SqlConnection;
+
+                        // Send the query to the database, and retrieve the data
+                        using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
+                        {
+                            adapter.Fill(resultSet);
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        throw;
+                    }
+                });
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                throw new Exception("Data access error. See inner exception for details", e);
+                throw;
             }
+
+            // Return the DataSet object
+            return resultSet;
         }
 
         #region Connection Methods
@@ -81,8 +112,15 @@ namespace Northwind.DataAccess
         /// <returns>A new connection.</returns>
         private static DbConnection GetConnection(string connectionString)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            return connection;
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectionString);
+                return connection;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -101,9 +139,9 @@ namespace Northwind.DataAccess
                 }
                 return (true, null);
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                return (false, e);
+                throw;
             }
         }
         #endregion
@@ -117,11 +155,6 @@ namespace Northwind.DataAccess
         /// <returns></returns>
         private static async Task<Order> ExtractOrderFromAsync(DataRow dataRow)
         {
-            // Repository object for querying
-            Repository repository = new Repository();
-            // List for OrderDetails related to the order
-            List<OrderDetail> orderDetails = new List<OrderDetail>();
-
             // Assign DataRows to variables
             int orderID = (int)dataRow["OrderID"];
             string customerID = (string)dataRow["CustomerID"];
@@ -138,20 +171,7 @@ namespace Northwind.DataAccess
             string shipPostalCode = Convert.IsDBNull(dataRow["ShipPostalCode"]) ? null : (string)dataRow["ShipPostalCode"];
             string shipCountry = Convert.IsDBNull(dataRow["ShipCountry"]) ? null : (string)dataRow["ShipCountry"];
 
-            // Query for getting Order details related to the order
-            string query = $"SELECT * FROM [Order Details] WHERE OrderID = {orderID};";
-            // Execute the query
-            DataSet details = await repository.ExecuteAsync(query);
-
-            // If the query returned any results
-            if(details.Tables.Count > 0 && details.Tables[0].Rows.Count > 0)
-            {
-                foreach(DataRow resultDataRow in details.Tables[0].Rows)
-                {
-                    OrderDetail detail = await Task.Run(() => ExtractOrderDetailFrom(resultDataRow));
-                    orderDetails.Add(detail);
-                }
-            }
+            List<OrderDetail> orderDetails = await GetOrderDetailsAsync(orderID);
 
             // Create the order object
             Order order = new Order(orderID, customerID, employeeID, orderDate, requiredDate, shippedDate,
@@ -346,6 +366,43 @@ namespace Northwind.DataAccess
             await ExecuteAsync(query);
         }
 
+        /// <summary>
+        /// Returns the order details for a specified order
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <returns></returns>
+        private static async Task<List<OrderDetail>> GetOrderDetailsAsync(int orderID)
+        {
+            // Repository object for querying
+            Repository repository = new Repository();
+
+            // List for OrderDetails related to the order
+            List<OrderDetail> orderDetails = new List<OrderDetail>();
+
+            // Query for getting Order details related to the order
+            string query = $"SELECT * FROM [Order Details] WHERE OrderID = {orderID};";
+
+            // Execute the query
+            DataSet details = await repository.ExecuteAsync(query);
+
+            // If the query returned any results
+            if(details.Tables.Count > 0 && details.Tables[0].Rows.Count > 0)
+            {
+                // Run the operation on a seperate thread
+                await Task.Run(() =>
+                {
+                    foreach(DataRow resultDataRow in details.Tables[0].Rows)
+                    {
+                        OrderDetail detail = ExtractOrderDetailFrom(resultDataRow);
+                        orderDetails.Add(detail);
+                    }
+                });
+            }
+
+            // Return orderDetails
+            return orderDetails;
+        }
+
         #endregion
 
         #region Get Data Methods
@@ -369,11 +426,14 @@ namespace Northwind.DataAccess
             }
             if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
             {
-                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                await Task.Run(async () =>
                 {
-                    Order order = await ExtractOrderFromAsync(dataRow);
-                    orders.Add(order);
-                }
+                    foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                    {
+                        Order order = await ExtractOrderFromAsync(dataRow);
+                        orders.Add(order);
+                    }
+                });
             }
             return orders;
         }
@@ -397,11 +457,14 @@ namespace Northwind.DataAccess
             }
             if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
             {
-                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                await Task.Run(() =>
                 {
-                    Customer customer = await Task.Run(() => ExtractCustomerFrom(dataRow));
-                    customers.Add(customer);
-                }
+                    foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                    {
+                        Customer customer = ExtractCustomerFrom(dataRow);
+                        customers.Add(customer);
+                    }
+                });
             }
             return customers;
         }
@@ -425,11 +488,14 @@ namespace Northwind.DataAccess
             }
             if(resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows.Count > 0)
             {
-                foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                await Task.Run(() =>
                 {
-                    Employee employee = await Task.Run(() => ExtractEmployeeFrom(dataRow));
-                    employees.Add(employee);
-                }
+                    foreach(DataRow dataRow in resultSet.Tables[0].Rows)
+                    {
+                        Employee employee = ExtractEmployeeFrom(dataRow);
+                        employees.Add(employee);
+                    }
+                });
             }
             return employees;
         }
