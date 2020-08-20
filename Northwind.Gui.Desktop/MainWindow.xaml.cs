@@ -36,9 +36,6 @@ namespace Northwind.Gui.Desktop
 
                 // Initialize repository
                 repository = new Repository();
-
-                // Run InitializeAsync to test connection to DB
-                await repository.InitializeAsync();
             }
             catch(Exception ex)
             {

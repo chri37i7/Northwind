@@ -154,8 +154,8 @@ namespace Northwind.Gui.Desktop
                 // Initialize repository
                 repository = new Repository();
 
-                // Test connection by running InitializeAsync
-                await repository.InitializeAsync();
+                //// Test connection by running InitializeAsync
+                //await repository.InitializeAsync();
 
                 // Initialize ObservableCollections
                 Orders = new ObservableCollection<Order>(await repository.GetAllOrdersAsync());

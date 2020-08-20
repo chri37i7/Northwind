@@ -24,32 +24,6 @@ namespace Northwind.DataAccess
         /// Initializes a new instance of Repository. Attempts to establish a connection, and will throw an exception on connection error.
         /// </summary>
         public Repository() { }
-
-        public virtual async Task InitializeAsync()
-        {
-            try
-            {
-                // Run the operation on a seperate thread
-                await Task.Run(async () =>
-                {
-                    try
-                    {
-                        // Get connection to the database
-                        SqlConnection connection = GetConnection(connectionString) as SqlConnection;
-                        // Test connection to the database
-                        (bool, Exception) connectionAttemptResult = await TryConnectUsingAsync(connection);
-                    }
-                    catch(Exception)
-                    {
-                        throw;
-                    }
-                });
-            }
-            catch(Exception)
-            {
-                throw;
-            }
-        }
         #endregion
 
         #region Helper Methods
@@ -77,20 +51,13 @@ namespace Northwind.DataAccess
                 // Run the operation on a seperate thread
                 await Task.Run(() =>
                 {
-                    try
-                    {
-                        // Get connection to the database
-                        SqlConnection connection = GetConnection(connectionString) as SqlConnection;
+                    // Get connection to the database
+                    SqlConnection connection = GetConnection(connectionString) as SqlConnection;
 
-                        // Send the query to the database, and retrieve the data
-                        using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
-                        {
-                            adapter.Fill(resultSet);
-                        }
-                    }
-                    catch(Exception)
+                    // Send the query to the database, and retrieve the data
+                    using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
                     {
-                        throw;
+                        adapter.Fill(resultSet);
                     }
                 });
             }
@@ -103,8 +70,7 @@ namespace Northwind.DataAccess
             return resultSet;
         }
 
-        #region Connection Methods
-
+        #region Get Connection Method
         /// <summary>
         /// Creates a connection based on the name of the input parameter connection string.
         /// </summary>
@@ -116,28 +82,6 @@ namespace Northwind.DataAccess
             {
                 SqlConnection connection = new SqlConnection(connectionString);
                 return connection;
-            }
-            catch(Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Attempts to connect to a data source using the provided connection.
-        /// </summary>
-        /// <param name="connection">The connection to use.</param>
-        /// <returns>True, if the connection could be established, false otherwise.</returns>
-        public async Task<(bool, Exception)> TryConnectUsingAsync(DbConnection connection)
-        {
-            try
-            {
-                using(connection)
-                {
-                    await connection.OpenAsync();
-                    await connection.CloseAsync();
-                }
-                return (true, null);
             }
             catch(Exception)
             {
