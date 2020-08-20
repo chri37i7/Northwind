@@ -21,9 +21,7 @@ namespace Northwind.Gui.Desktop
         #endregion
 
         #region Constructor
-        public ViewModel()
-        {
-        }
+        public ViewModel() { }
         #endregion
 
         #region Properties

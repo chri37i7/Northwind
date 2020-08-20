@@ -21,20 +21,19 @@ namespace Northwind.Gui.Desktop
             InitializeComponent();
         }
 
-        public async override void EndInit()
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Prevents crash on startup
-            base.EndInit();
+            // Initialize repository
+            repository = new Repository();
 
             // Initialize viewModel
             viewModel = new ViewModel();
-            await viewModel.InitializeAsync();
 
             // Assign viewModel to DataContext
             DataContext = viewModel;
 
-            // Initialize repository
-            repository = new Repository();
+            // Initialize viewModel Observeable Collections
+            await viewModel.InitializeAsync();
         }
 
         #region Master Events

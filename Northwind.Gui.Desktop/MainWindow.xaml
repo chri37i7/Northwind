@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Width="920"
         Height="750"
-        Title="Northwind Order Administration System">
+        Title="Northwind Order Administration System"
+        Loaded="OnLoaded">
     <Grid>
         <!-- #region Columns and Rows-->
         <Grid.ColumnDefinitions>
