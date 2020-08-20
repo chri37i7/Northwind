@@ -31,7 +31,7 @@ namespace Northwind.DataAccess
         {
             try
             {
-                SqlConnection connection = await Task.Factory.StartNew(() => GetConnection(connectionString) as SqlConnection);
+                SqlConnection connection = await Task.Run(() => GetConnection(connectionString) as SqlConnection);
                 (bool, Exception) connectionAttemptResult = await TryConnectUsingAsync(connection);
             }
             catch(Exception e)
@@ -59,10 +59,10 @@ namespace Northwind.DataAccess
             DataSet resultSet = new DataSet();
             try
             {
-                SqlConnection connection = await Task.Factory.StartNew(() => GetConnection(connectionString)) as SqlConnection;
+                SqlConnection connection = await Task.Run(() => GetConnection(connectionString) as SqlConnection);
                 using(SqlDataAdapter adapter = new SqlDataAdapter(new SqlCommand(query, connection)))
                 {
-                    await Task.Factory.StartNew(() => adapter.Fill(resultSet));
+                    await Task.Run(() => adapter.Fill(resultSet));
                 }
                 return resultSet;
             }
@@ -148,7 +148,7 @@ namespace Northwind.DataAccess
             {
                 foreach(DataRow resultDataRow in details.Tables[0].Rows)
                 {
-                    OrderDetail detail = await Task.Factory.StartNew(() => ExtractOrderDetailFrom(resultDataRow));
+                    OrderDetail detail = await Task.Run(() => ExtractOrderDetailFrom(resultDataRow));
                     orderDetails.Add(detail);
                 }
             }
@@ -399,7 +399,7 @@ namespace Northwind.DataAccess
             {
                 foreach(DataRow dataRow in resultSet.Tables[0].Rows)
                 {
-                    Customer customer = await Task.Factory.StartNew(() => ExtractCustomerFrom(dataRow));
+                    Customer customer = await Task.Run(() => ExtractCustomerFrom(dataRow));
                     customers.Add(customer);
                 }
             }
@@ -427,7 +427,7 @@ namespace Northwind.DataAccess
             {
                 foreach(DataRow dataRow in resultSet.Tables[0].Rows)
                 {
-                    Employee employee = await Task.Factory.StartNew(() => ExtractEmployeeFrom(dataRow));
+                    Employee employee = await Task.Run(() => ExtractEmployeeFrom(dataRow));
                     employees.Add(employee);
                 }
             }

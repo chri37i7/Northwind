@@ -13,12 +13,17 @@ namespace Northwind.Gui.Desktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ViewModel viewModel;
-        private readonly Repository repository;
+        private ViewModel viewModel;
+        private Repository repository;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public override void EndInit()
+        {
+            base.EndInit();
 
             viewModel = new ViewModel();
             DataContext = viewModel;
