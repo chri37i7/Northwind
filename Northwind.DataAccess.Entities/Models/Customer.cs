@@ -27,6 +27,9 @@ namespace Northwind.DataAccess.Entities.Models
         public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemos { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
 
-        public override string ToString() => CompanyName;
+        public override string ToString()
+        {
+            return CompanyName;
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Northwind.DataAccess
 {
+    #warning Gør lort Async
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected NorthwindDbContext context;
@@ -14,7 +15,11 @@ namespace Northwind.DataAccess
 
         public BaseRepository() { }
 
-        public virtual NorthwindDbContext Context { get => context; set => context = value; }
+        public virtual NorthwindDbContext Context
+        {
+            get { return context; }
+            set { context = value; }
+        }
 
         public void Add(T t)
         {

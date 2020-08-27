@@ -48,14 +48,4 @@ namespace Northwind.Entities
             context.Dispose();
         }
     }
-
-    class Test
-    {
-        public void M()
-        {
-            var factory = RepositoryFactory<OrderRepository, Order>.GetInstance();
-            var repo = factory.Create();
-            factory.KillContext();
-        }
-    }
 }
