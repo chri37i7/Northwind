@@ -37,13 +37,13 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Order ID:"
-                                        DisplayMemberBinding="{Binding OrderID}"
+                                        DisplayMemberBinding="{Binding OrderId}"
                                         Width="80" />
                         <GridViewColumn Header="Customer ID:"
-                                        DisplayMemberBinding="{Binding CustomerID}"
+                                        DisplayMemberBinding="{Binding CustomerId}"
                                         Width="90" />
                         <GridViewColumn Header="Employee ID:"
-                                        DisplayMemberBinding="{Binding EmployeeID}"
+                                        DisplayMemberBinding="{Binding EmployeeId}"
                                         Width="90" />
                     </GridView>
                 </ListView.View>
@@ -443,7 +443,7 @@
                                            FontWeight="Light" />
                                 <TextBox x:Name="textBox_ProductID"
                                          IsEnabled="True"
-                                         Text="{Binding SelectedOrderDetail.ProductID, Mode=OneWay}"
+                                         Text="{Binding SelectedOrderDetail.ProductId, Mode=OneWay}"
                                          IsReadOnly="True"
                                          Width="120"
                                          FontSize="16"

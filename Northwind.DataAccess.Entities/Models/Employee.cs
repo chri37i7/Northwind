@@ -37,5 +37,10 @@ namespace Northwind.DataAccess.Entities.Models
         public virtual ICollection<EmployeeTerritory> EmployeeTerritories { get; set; }
         public virtual ICollection<Employee> InverseReportsToNavigation { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }

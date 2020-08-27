@@ -15,6 +15,7 @@ namespace Northwind.DataAccess
             return context.Orders.Where(o => o.OrderId == id)
                 .Include("Customer")
                 .Include("OrderDetails")
+                .Include("Products")
                 .FirstOrDefault();
         }
 
