@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Gui.Desktop", "Northwind.Gui.Desktop\Northwind.Gui.Desktop.csproj", "{7CCA9E7A-07B3-46D6-A4B1-67B869777F2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.Gui.Desktop", "Northwind.Gui.Desktop\Northwind.Gui.Desktop.csproj", "{7CCA9E7A-07B3-46D6-A4B1-67B869777F2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Tests", "Northwind.Tests\Northwind.Tests.csproj", "{1542D950-8ADB-4198-BE27-00BE3D95B9A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.Tests", "Northwind.Tests\Northwind.Tests.csproj", "{1542D950-8ADB-4198-BE27-00BE3D95B9A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.DataAccess", "Northwind.DataAccess\Northwind.DataAccess.csproj", "{64AC2834-7E85-4657-BF8A-F81AFCAD9219}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.DataAccess", "Northwind.DataAccess\Northwind.DataAccess.csproj", "{64AC2834-7E85-4657-BF8A-F81AFCAD9219}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Entities", "Northwind.Entities\Northwind.Entities.csproj", "{245EE192-1B19-47A8-A419-A2449F9B4E71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.Entities", "Northwind.Entities\Northwind.Entities.csproj", "{245EE192-1B19-47A8-A419-A2449F9B4E71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Services", "Northwind.Services\Northwind.Services.csproj", "{E3596D73-9DE3-4002-839C-78A01C83F7FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.Services", "Northwind.Services\Northwind.Services.csproj", "{E3596D73-9DE3-4002-839C-78A01C83F7FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Utilities", "Northwind.Utilities\Northwind.Utilities.csproj", "{68C08ADE-2785-4A8D-8F85-26E5C96D4FCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind.Utilities", "Northwind.Utilities\Northwind.Utilities.csproj", "{68C08ADE-2785-4A8D-8F85-26E5C96D4FCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.DataAccess.Entities", "Northwind.DataAccess.Entities\Northwind.DataAccess.Entities.csproj", "{AD268184-D848-4107-A6D5-C8A32FC34EC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{68C08ADE-2785-4A8D-8F85-26E5C96D4FCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68C08ADE-2785-4A8D-8F85-26E5C96D4FCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68C08ADE-2785-4A8D-8F85-26E5C96D4FCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD268184-D848-4107-A6D5-C8A32FC34EC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD268184-D848-4107-A6D5-C8A32FC34EC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD268184-D848-4107-A6D5-C8A32FC34EC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD268184-D848-4107-A6D5-C8A32FC34EC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,8 @@
 ﻿using Northwind.DataAccess;
+using Northwind.DataAccess.Entities.Models;
 using Northwind.Entities;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,7 +13,9 @@ namespace Northwind.Gui.Desktop
     public class ViewModel : INotifyPropertyChanged
     {
         #region Fields
-        protected Repository repository;
+        protected BaseRepository<Order> orderRepository;
+        protected BaseRepository<Customer> customerRepository;
+        protected BaseRepository<Employee> employeeRepository;
         protected ObservableCollection<Order> orders;
         protected Order selectedOrder;
         protected OrderDetail selectedOrderDetail;
@@ -19,6 +23,7 @@ namespace Northwind.Gui.Desktop
         protected Customer selectedCustomer;
         protected ObservableCollection<Employee> employees;
         protected Employee selectedEmployee;
+        protected NorthwindDbContext context;
         #endregion
 
         #region Constructor
@@ -151,16 +156,25 @@ namespace Northwind.Gui.Desktop
         {
             try
             {
-                // Initialize repository
-                repository = new Repository();
+                await Task.Run(() =>
+                {
+                    RepositoryFactory<OrderRepository, Order> factory = RepositoryFactory<OrderRepository, Order>.GetInstance();
+                    OrderRepository repo = factory.Create();
 
-                //// Test connection by running InitializeAsync
-                //await repository.InitializeAsync();
+                    IEnumerable<Order> orders = repo.GetAll();
 
-                // Initialize ObservableCollections
-                Orders = new ObservableCollection<Order>(await repository.GetAllOrdersAsync());
-                Customers = new ObservableCollection<Customer>(await repository.GetAllCustomersAsync());
-                Employees = new ObservableCollection<Employee>(await repository.GetAllEmployeesAsync());
+
+                    RepositoryFactory<EmployeeRepository, Employee> employeeFactory = RepositoryFactory<EmployeeRepository, Employee>.GetInstance();
+                    EmployeeRepository employeeRepository = employeeFactory.Create();
+
+                    IEnumerable<Employee> employees = employeeRepository.GetAll();
+
+
+                    // Initialize ObservableCollections
+                    Orders = new ObservableCollection<Order>(orders);
+                    Customers = new ObservableCollection<Customer>();
+                    Employees = new ObservableCollection<Employee>(employees);
+                });
             }
             catch(Exception)
             {

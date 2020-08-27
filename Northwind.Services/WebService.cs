@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Northwind.Entities;
+
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -43,30 +43,30 @@ namespace Northwind.Services
         /// Returns a list of the current exchange rates
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<List<ExchangeRate>> GetRates()
-        {
-            // Get the JSON data from the endpoint
-            string json = await CallWebApi(url);
+        //public virtual async Task<List<ExchangeRate>> GetRates()
+        //{
+        //    // Get the JSON data from the endpoint
+        //    string json = await CallWebApi(url);
 
-            // Get the rates from the JSON data by parsing the JSON rates array into a string
-            string parsedRates = JObject.Parse(json)["rates"].ToString();
+        //    // Get the rates from the JSON data by parsing the JSON rates array into a string
+        //    string parsedRates = JObject.Parse(json)["rates"].ToString();
 
-            // Deserialize the parsed string into a dictionary
-            Dictionary<string, double> dict = JsonConvert.DeserializeObject<Dictionary<string, double>>(parsedRates);
+        //    // Deserialize the parsed string into a dictionary
+        //    Dictionary<string, double> dict = JsonConvert.DeserializeObject<Dictionary<string, double>>(parsedRates);
 
-            // Create a List for storing the exchange rates
-            List<ExchangeRate> rates = new List<ExchangeRate>();
+        //    // Create a List for storing the exchange rates
+        //    List<ExchangeRate> rates = new List<ExchangeRate>();
 
-            // Add all the rates from the Dictionary to the List
-            foreach(KeyValuePair<string, double> dictItem in dict)
-            {
-                ExchangeRate exchangeRate = new ExchangeRate(dictItem.Key.ToString(), Convert.ToDouble(dictItem.Value.ToString()));
-                rates.Add(exchangeRate);
-            }
+        //    // Add all the rates from the Dictionary to the List
+        //    foreach(KeyValuePair<string, double> dictItem in dict)
+        //    {
+        //        ExchangeRate exchangeRate = new ExchangeRate(dictItem.Key.ToString(), Convert.ToDouble(dictItem.Value.ToString()));
+        //        rates.Add(exchangeRate);
+        //    }
 
-            // Return the List
-            return rates;
-        }
+        //    // Return the List
+        //    return rates;
+        //}
 
         /// <summary>
         /// Calls the Api endpoint, and returns a string with the retrieved data

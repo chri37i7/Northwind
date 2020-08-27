@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Northwind.DataAccess;
+using Northwind.DataAccess.Entities.Models;
+using Northwind.Entities;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Northwind.DataAccess;
-using Northwind.Entities;
 
 namespace Northwind.Gui.Desktop
 {
@@ -14,7 +16,7 @@ namespace Northwind.Gui.Desktop
     public partial class MainWindow : Window
     {
         private ViewModel viewModel;
-        private Repository repository;
+        private OrderRepository orderRepository;
 
         public MainWindow()
         {
@@ -33,9 +35,6 @@ namespace Northwind.Gui.Desktop
 
                 // Initialize viewModel Observeable Collections
                 await viewModel.InitializeAsync();
-
-                // Initialize repository
-                repository = new Repository();
             }
             catch(Exception ex)
             {
@@ -51,22 +50,23 @@ namespace Northwind.Gui.Desktop
             {
                 List<OrderDetail> orderDetails = new List<OrderDetail>();
 
-                Order updatedOrder = new Order(
-                    viewModel.SelectedOrder.OrderID,
-                    viewModel.SelectedCustomer.CustomerID,
-                    viewModel.SelectedEmployee.EmployeeID,
-                    datePicker_OrderDate.SelectedDate ?? DateTime.Now,
-                    datePicker_RequiredDate.SelectedDate ?? DateTime.Now,
-                    datePicker_ShippedDate.SelectedDate ?? DateTime.Now,
-                    Convert.ToInt32(textBox_ShipVia.Text),
-                    Convert.ToDecimal(textBox_Freight.Text),
-                    textBox_ShipName.Text,
-                    textBox_ShipAddress.Text,
-                    textBox_ShipCity.Text,
-                    textBox_ShipRegion.Text,
-                    textBox_ShipPostalCode.Text,
-                    textBox_ShipCountry.Text,
-                    orderDetails);
+                Order updatedOrder = new Order()
+                {
+                    CustomerId = viewModel.SelectedCustomer.CustomerId,
+                    EmployeeId = viewModel.SelectedEmployee.EmployeeId,
+                    OrderDate = datePicker_OrderDate.SelectedDate ?? DateTime.Now,
+                    RequiredDate = datePicker_RequiredDate.SelectedDate ?? DateTime.Now,
+                    ShippedDate = datePicker_ShippedDate.SelectedDate ?? DateTime.Now,
+                    ShipVia = Convert.ToInt32(textBox_ShipVia.Text),
+                    Freight = Convert.ToDecimal(textBox_Freight.Text),
+                    ShipName = textBox_ShipName.Text,
+                    ShipAddress = textBox_ShipAddress.Text,
+                    ShipCity = textBox_ShipCity.Text,
+                    ShipRegion = textBox_ShipRegion.Text,
+                    ShipPostalCode = textBox_ShipPostalCode.Text,
+                    ShipCountry = textBox_ShipCountry.Text,
+                    OrderDetails = orderDetails
+                };
 
                 // Remove the old order
                 viewModel.Orders.Remove(viewModel.SelectedOrder);
@@ -75,7 +75,8 @@ namespace Northwind.Gui.Desktop
                 // Select the new order
                 listView_Orders.SelectedItem = updatedOrder;
                 // Update the order in the DB
-                await repository.UpdateOrderAsync(updatedOrder);
+#warning
+                //await repository.UpdateOrderAsync(updatedOrder);
             }
             else
             {
@@ -83,23 +84,26 @@ namespace Northwind.Gui.Desktop
                 {
                     List<OrderDetail> orderDetails = new List<OrderDetail>();
 
-                    Order newOrder = new Order(
-                        viewModel.SelectedCustomer.CustomerID,
-                        viewModel.SelectedEmployee.EmployeeID,
-                        datePicker_OrderDate.SelectedDate ?? DateTime.Now,
-                        datePicker_RequiredDate.SelectedDate ?? DateTime.Now,
-                        datePicker_ShippedDate.SelectedDate ?? DateTime.Now,
-                        Convert.ToInt32(textBox_ShipVia.Text),
-                        Convert.ToDecimal(textBox_Freight.Text),
-                       textBox_ShipName.Text,
-                        textBox_ShipAddress.Text,
-                        textBox_ShipCity.Text,
-                        textBox_ShipRegion.Text,
-                        textBox_ShipPostalCode.Text,
-                        textBox_ShipCountry.Text,
-                        orderDetails);
+                    Order newOrder = new Order()
+                    {
+                        CustomerId = viewModel.SelectedCustomer.CustomerId,
+                        EmployeeId = viewModel.SelectedEmployee.EmployeeId,
+                        OrderDate = datePicker_OrderDate.SelectedDate ?? DateTime.Now,
+                        RequiredDate = datePicker_RequiredDate.SelectedDate ?? DateTime.Now,
+                        ShippedDate = datePicker_ShippedDate.SelectedDate ?? DateTime.Now,
+                        ShipVia = Convert.ToInt32(textBox_ShipVia.Text),
+                        Freight = Convert.ToDecimal(textBox_Freight.Text),
+                        ShipName = textBox_ShipName.Text,
+                        ShipAddress = textBox_ShipAddress.Text,
+                        ShipCity = textBox_ShipCity.Text,
+                        ShipRegion = textBox_ShipRegion.Text,
+                        ShipPostalCode = textBox_ShipPostalCode.Text,
+                        ShipCountry = textBox_ShipCountry.Text,
+                        OrderDetails = orderDetails
+                    };
 
-                    viewModel.Orders.Add(await repository.InsertOrderAsync(newOrder));
+#warning
+                    //viewModel.Orders.Add(await repository.InsertOrderAsync(newOrder));
                     listView_Orders.SelectedItem = newOrder;
                 }
                 catch(Exception ex)
@@ -182,8 +186,8 @@ namespace Northwind.Gui.Desktop
             if(viewModel.SelectedOrder != null)
             {
                 // Set selected Items to the correct Customer, and Employee found in the SelectedOrder properties
-                comboBox_Customer.SelectedItem = viewModel.Customers.Where(c => c.CustomerID == viewModel.SelectedOrder.CustomerID).ToList()[0];
-                comboBox_Employee.SelectedItem = viewModel.Employees.Where(c => c.EmployeeID == viewModel.SelectedOrder.EmployeeID).ToList()[0];
+                comboBox_Customer.SelectedItem = viewModel.Customers.FirstOrDefault(c => c.CustomerId == viewModel.SelectedOrder.CustomerId);
+                comboBox_Employee.SelectedItem = viewModel.Employees.FirstOrDefault(c => c.EmployeeId == viewModel.SelectedOrder.EmployeeId);
 
                 // Enable
                 button_EditOrder.IsEnabled = true;
@@ -229,15 +233,19 @@ namespace Northwind.Gui.Desktop
                     try
                     {
                         // Create object
-                        OrderDetail updatedOrderDetail = new OrderDetail(
-                            viewModel.SelectedOrder.OrderID,
-                            Convert.ToInt32(textBox_ProductID.Text),
-                            Convert.ToDecimal(textBox_UnitPrice.Text),
-                            Convert.ToInt16(textBox_Quantity.Text),
-                            Convert.ToSingle(textBox_Discount.Text));
+                        OrderDetail updatedOrderDetail = new OrderDetail()
+                        {
+
+                            OrderId = viewModel.SelectedOrder.OrderId,
+                            ProductId = Convert.ToInt32(textBox_ProductID.Text),
+                            UnitPrice = Convert.ToDecimal(textBox_UnitPrice.Text),
+                            Quantity = Convert.ToInt16(textBox_Quantity.Text),
+                            Discount = Convert.ToSingle(textBox_Discount.Text)
+                        };
 
                         // Insert into the DB
-                        await repository.UpdateOrderDetailAsync(updatedOrderDetail);
+#warning
+                        //await repository.UpdateOrderDetailAsync(updatedOrderDetail);
                         // Remove old data from ViewModel
                         viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
                         // Add new data to viewModel
@@ -256,15 +264,18 @@ namespace Northwind.Gui.Desktop
                     try
                     {
                         // Create object
-                        OrderDetail newOrderDetail = new OrderDetail(
-                            viewModel.SelectedOrder.OrderID,
-                            Convert.ToInt32(textBox_ProductID.Text),
-                            Convert.ToDecimal(textBox_UnitPrice.Text),
-                            Convert.ToInt16(textBox_Quantity.Text),
-                            Convert.ToSingle(textBox_Discount.Text));
+                        OrderDetail newOrderDetail = new OrderDetail()
+                        {
+                            OrderId = viewModel.SelectedOrder.OrderId,
+                            ProductId = Convert.ToInt32(textBox_ProductID.Text),
+                            UnitPrice = Convert.ToDecimal(textBox_UnitPrice.Text),
+                            Quantity = Convert.ToInt16(textBox_Quantity.Text),
+                            Discount = Convert.ToSingle(textBox_Discount.Text)
+                        };
 
                         // Insert into the DB
-                        await repository.InsertOrderDetailAsync(newOrderDetail);
+#warning
+                        //await repository.InsertOrderDetailAsync(newOrderDetail);
                         // Add to the ViewModel
                         viewModel.SelectedOrder.OrderDetails.Add(newOrderDetail);
                         // Set as selected
@@ -302,7 +313,8 @@ namespace Northwind.Gui.Desktop
         private async void Button_DeleteOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             // Delete the order detail
-            await repository.DeleteOrderDetailAsync(viewModel.SelectedOrderDetail);
+#warning
+            //await repository.DeleteOrderDetailAsync(viewModel.SelectedOrderDetail);
 
             // Remove the OrderDetail from the ViewModel
             viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
