@@ -1,7 +1,4 @@
-﻿using Northwind.DataAccess;
-using Northwind.DataAccess.Entities.Models;
-using Northwind.Entities;
-
+﻿using Northwind.DataAccess.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +13,6 @@ namespace Northwind.Gui.Desktop
     public partial class MainWindow : Window
     {
         private ViewModel viewModel;
-        private OrderRepository orderRepository;
 
         public MainWindow()
         {
@@ -75,7 +71,7 @@ namespace Northwind.Gui.Desktop
                 // Select the new order
                 listView_Orders.SelectedItem = updatedOrder;
                 // Update the order in the DB
-#warning
+                #warning
                 //await repository.UpdateOrderAsync(updatedOrder);
             }
             else
@@ -102,7 +98,7 @@ namespace Northwind.Gui.Desktop
                         OrderDetails = orderDetails
                     };
 
-#warning
+                    #warning
                     //viewModel.Orders.Add(await repository.InsertOrderAsync(newOrder));
                     listView_Orders.SelectedItem = newOrder;
                 }
@@ -244,7 +240,7 @@ namespace Northwind.Gui.Desktop
                         };
 
                         // Insert into the DB
-#warning
+                        #warning
                         //await repository.UpdateOrderDetailAsync(updatedOrderDetail);
                         // Remove old data from ViewModel
                         viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
@@ -274,7 +270,7 @@ namespace Northwind.Gui.Desktop
                         };
 
                         // Insert into the DB
-#warning
+                        #warning
                         //await repository.InsertOrderDetailAsync(newOrderDetail);
                         // Add to the ViewModel
                         viewModel.SelectedOrder.OrderDetails.Add(newOrderDetail);
@@ -313,7 +309,7 @@ namespace Northwind.Gui.Desktop
         private async void Button_DeleteOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             // Delete the order detail
-#warning
+            #warning
             //await repository.DeleteOrderDetailAsync(viewModel.SelectedOrderDetail);
 
             // Remove the OrderDetail from the ViewModel

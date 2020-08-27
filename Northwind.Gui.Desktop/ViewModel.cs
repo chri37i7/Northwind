@@ -158,21 +158,24 @@ namespace Northwind.Gui.Desktop
             {
                 await Task.Run(() =>
                 {
-                    RepositoryFactory<OrderRepository, Order> factory = RepositoryFactory<OrderRepository, Order>.GetInstance();
-                    OrderRepository repo = factory.Create();
+                    // Orders
+                    RepositoryFactory<OrderRepository, Order> orderFactory = RepositoryFactory<OrderRepository, Order>.GetInstance();
+                    OrderRepository orderRepository = orderFactory.Create();
+                    IEnumerable<Order> orders = orderRepository.GetAll();
 
-                    IEnumerable<Order> orders = repo.GetAll();
-
-
+                    // Employees
                     RepositoryFactory<EmployeeRepository, Employee> employeeFactory = RepositoryFactory<EmployeeRepository, Employee>.GetInstance();
                     EmployeeRepository employeeRepository = employeeFactory.Create();
-
                     IEnumerable<Employee> employees = employeeRepository.GetAll();
 
+                    // Customers
+                    RepositoryFactory<CustomerRepository, Customer> customerFactory = RepositoryFactory<CustomerRepository, Customer>.GetInstance();
+                    CustomerRepository customerRepository = customerFactory.Create();
+                    IEnumerable<Customer> customers = customerRepository.GetAll();
 
                     // Initialize ObservableCollections
                     Orders = new ObservableCollection<Order>(orders);
-                    Customers = new ObservableCollection<Customer>();
+                    Customers = new ObservableCollection<Customer>(customers);
                     Employees = new ObservableCollection<Employee>(employees);
                 });
             }
