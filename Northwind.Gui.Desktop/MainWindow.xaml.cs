@@ -1,4 +1,5 @@
 ﻿using Northwind.DataAccess.Entities.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,9 +45,7 @@ namespace Northwind.Gui.Desktop
         {
             if(viewModel.SelectedOrder != null)
             {
-                List<OrderDetail> orderDetails = new List<OrderDetail>();
-
-                Order updatedOrder = new Order()
+                Order order = new Order()
                 {
                     CustomerId = viewModel.SelectedCustomer.CustomerId,
                     EmployeeId = viewModel.SelectedEmployee.EmployeeId,
@@ -61,18 +60,11 @@ namespace Northwind.Gui.Desktop
                     ShipRegion = textBox_ShipRegion.Text,
                     ShipPostalCode = textBox_ShipPostalCode.Text,
                     ShipCountry = textBox_ShipCountry.Text,
-                    OrderDetails = orderDetails
+                    OrderDetails = viewModel.SelectedOrder.OrderDetails
                 };
 
-                // Remove the old order
-                viewModel.Orders.Remove(viewModel.SelectedOrder);
-                // Add the new order
-                viewModel.Orders.Add(updatedOrder);
-                // Select the new order
-                listView_Orders.SelectedItem = updatedOrder;
-                // Update the order in the DB
-                #warning
-                //await repository.UpdateOrderAsync(updatedOrder);
+                viewModel.SelectedOrder = null;
+                viewModel.SelectedOrder = order;
             }
             else
             {
@@ -98,7 +90,7 @@ namespace Northwind.Gui.Desktop
                         OrderDetails = orderDetails
                     };
 
-                    #warning
+#warning
                     //viewModel.Orders.Add(await repository.InsertOrderAsync(newOrder));
                     listView_Orders.SelectedItem = newOrder;
                 }
@@ -181,23 +173,26 @@ namespace Northwind.Gui.Desktop
             // If the SelectedOrder is not null, disable the DatePickers, and TextBoxes
             if(viewModel.SelectedOrder != null)
             {
-                // Set selected Items to the correct Customer, and Employee found in the SelectedOrder properties
-                comboBox_Customer.SelectedItem = viewModel.Customers.FirstOrDefault(c => c.CustomerId == viewModel.SelectedOrder.CustomerId);
-                comboBox_Employee.SelectedItem = viewModel.Employees.FirstOrDefault(c => c.EmployeeId == viewModel.SelectedOrder.EmployeeId);
+                if(viewModel.SelectedOrder.Customer != null && viewModel.SelectedOrder.Employee != null)
+                {
+                    // Set selected Items to the correct Customer, and Employee found in the SelectedOrder properties
+                    comboBox_Customer.SelectedItem = viewModel.Customers.FirstOrDefault(c => c.CustomerId == viewModel.SelectedOrder.CustomerId);
+                    comboBox_Employee.SelectedItem = viewModel.Employees.FirstOrDefault(c => c.EmployeeId == viewModel.SelectedOrder.EmployeeId);
 
-                // Enable
-                button_EditOrder.IsEnabled = true;
-                button_NewOrderDetail.IsEnabled = true;
-            }
-            else
-            {
-                // Reset 
-                comboBox_Customer.SelectedItem = null;
-                comboBox_Employee.SelectedItem = null;
+                    // Enable
+                    button_EditOrder.IsEnabled = true;
+                    button_NewOrderDetail.IsEnabled = true;
+                }
+                else
+                {
+                    // Reset 
+                    comboBox_Customer.SelectedItem = null;
+                    comboBox_Employee.SelectedItem = null;
 
-                // Disable
-                button_EditOrder.IsEnabled = false;
-                button_NewOrderDetail.IsEnabled = false;
+                    // Disable
+                    button_EditOrder.IsEnabled = false;
+                    button_NewOrderDetail.IsEnabled = false;
+                } 
             }
         }
 
@@ -240,7 +235,7 @@ namespace Northwind.Gui.Desktop
                         };
 
                         // Insert into the DB
-                        #warning
+#warning
                         //await repository.UpdateOrderDetailAsync(updatedOrderDetail);
                         // Remove old data from ViewModel
                         viewModel.SelectedOrder.OrderDetails.Remove(viewModel.SelectedOrderDetail);
@@ -270,7 +265,7 @@ namespace Northwind.Gui.Desktop
                         };
 
                         // Insert into the DB
-                        #warning
+#warning
                         //await repository.InsertOrderDetailAsync(newOrderDetail);
                         // Add to the ViewModel
                         viewModel.SelectedOrder.OrderDetails.Add(newOrderDetail);
@@ -309,7 +304,7 @@ namespace Northwind.Gui.Desktop
         private async void Button_DeleteOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             // Delete the order detail
-            #warning
+#warning
             //await repository.DeleteOrderDetailAsync(viewModel.SelectedOrderDetail);
 
             // Remove the OrderDetail from the ViewModel

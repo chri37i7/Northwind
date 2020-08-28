@@ -1,4 +1,4 @@
-﻿using Northwind.DataAccess.Entities.Models;
+﻿        using Northwind.DataAccess.Entities.Models;
 using System.Collections.Generic;
 
 namespace Northwind.DataAccess
@@ -8,7 +8,7 @@ namespace Northwind.DataAccess
         NorthwindDbContext Context { get; set; }
         IEnumerable<T> GetAll();
         T GetBy(int id);
-        void Update(T t);
+        void Update();
         void Add(T t);
         void Delete(T t);
     }

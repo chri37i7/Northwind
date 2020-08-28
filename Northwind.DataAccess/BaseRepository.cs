@@ -43,7 +43,7 @@ namespace Northwind.DataAccess
             return context.Set<T>().Find(id);
         }
 
-        public void Update(T t)
+        public void Update()
         {
             context.SaveChanges();
         }

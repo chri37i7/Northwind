@@ -1,6 +1,7 @@
 ﻿using Northwind.DataAccess;
 using Northwind.DataAccess.Entities.Models;
 using Northwind.Entities;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,9 +14,6 @@ namespace Northwind.Gui.Desktop
     public class ViewModel : INotifyPropertyChanged
     {
         #region Fields
-        protected BaseRepository<Order> orderRepository;
-        protected BaseRepository<Customer> customerRepository;
-        protected BaseRepository<Employee> employeeRepository;
         protected ObservableCollection<Order> orders;
         protected Order selectedOrder;
         protected OrderDetail selectedOrderDetail;
@@ -23,8 +21,11 @@ namespace Northwind.Gui.Desktop
         protected Customer selectedCustomer;
         protected ObservableCollection<Employee> employees;
         protected Employee selectedEmployee;
-        protected NorthwindDbContext context;
         #endregion
+
+        OrderRepository orderRepository;
+        EmployeeRepository employeeRepository;
+        CustomerRepository customerRepository;
 
         #region Constructor
         public ViewModel() { }
@@ -61,6 +62,8 @@ namespace Northwind.Gui.Desktop
                     selectedOrder = value;
 
                     NotifyPropertyChanged();
+
+                    orderRepository.Update();
                 }
             }
         }
@@ -112,6 +115,8 @@ namespace Northwind.Gui.Desktop
                     selectedCustomer = value;
 
                     NotifyPropertyChanged();
+
+                    customerRepository.Update();
                 }
             }
         }
@@ -146,6 +151,8 @@ namespace Northwind.Gui.Desktop
                     selectedEmployee = value;
 
                     NotifyPropertyChanged();
+
+                    employeeRepository.Update();
                 }
             }
         }
@@ -160,17 +167,19 @@ namespace Northwind.Gui.Desktop
                 {
                     // Orders
                     RepositoryFactory<OrderRepository, Order> orderFactory = RepositoryFactory<OrderRepository, Order>.GetInstance();
-                    OrderRepository orderRepository = orderFactory.Create();
+                    orderRepository = orderFactory.Create();
                     IEnumerable<Order> orders = orderRepository.GetAll();
+
+
 
                     // Employees
                     RepositoryFactory<EmployeeRepository, Employee> employeeFactory = RepositoryFactory<EmployeeRepository, Employee>.GetInstance();
-                    EmployeeRepository employeeRepository = employeeFactory.Create();
+                    employeeRepository = employeeFactory.Create();
                     IEnumerable<Employee> employees = employeeRepository.GetAll();
 
                     // Customers
                     RepositoryFactory<CustomerRepository, Customer> customerFactory = RepositoryFactory<CustomerRepository, Customer>.GetInstance();
-                    CustomerRepository customerRepository = customerFactory.Create();
+                    customerRepository = customerFactory.Create();
                     IEnumerable<Customer> customers = customerRepository.GetAll();
 
                     // Initialize ObservableCollections
